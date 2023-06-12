@@ -1,0 +1,10 @@
+name: CSGO
+version: '${project.version}'
+main: me.reklessmitch.csgo.MiniGames
+api-version: 1.19
+authors: [ ReklessMitch ]
+depend: [PlaceholderAPI, MassiveCore]
+description: CSGO with IA
+permissions:
+  csgo.admin: {description: admin, default: false}
+  csgo.join : {description: join, default: false}

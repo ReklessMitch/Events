@@ -1,0 +1,17 @@
+me\reklessmitch\csgo\configs\Kit.class
+me\reklessmitch\csgo\utils\SpawnLocation.class
+me\reklessmitch\csgo\cmd\ArenaCommand.class
+me\reklessmitch\csgo\guis\GamesGUI.class
+me\reklessmitch\csgo\colls\MConfColl.class
+me\reklessmitch\csgo\colls\ArenaColl.class
+me\reklessmitch\csgo\guis\SelectKitGUI.class
+me\reklessmitch\csgo\configs\MConf.class
+me\reklessmitch\csgo\cmd\kits\CmdKitCreate.class
+me\reklessmitch\csgo\cmd\kits\CmdKit.class
+me\reklessmitch\csgo\colls\FlowerPowerArenaColl.class
+me\reklessmitch\csgo\utils\ShopItem.class
+me\reklessmitch\csgo\guis\CSGOShop.class
+me\reklessmitch\csgo\colls\KitColl.class
+me\reklessmitch\csgo\configs\Arena.class
+me\reklessmitch\csgo\utils\GameType.class
+me\reklessmitch\csgo\Perm.class
