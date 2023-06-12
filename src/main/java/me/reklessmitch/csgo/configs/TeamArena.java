@@ -3,9 +3,8 @@ package me.reklessmitch.csgo.configs;
 import com.massivecraft.massivecore.store.Entity;
 import lombok.Getter;
 import lombok.Setter;
-import me.reklessmitch.csgo.colls.FFAArenaColl;
 import me.reklessmitch.csgo.colls.TeamArenaColl;
-import me.reklessmitch.csgo.utils.SpawnLocation;
+import me.reklessmitch.csgo.utils.SerLocation;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -15,7 +14,7 @@ import java.util.Map;
 @Getter
 public class TeamArena extends Entity<TeamArena> {
 
-    Map<String, List<SpawnLocation>> teamSpawns;
+    Map<String, List<SerLocation>> teamSpawns;
     boolean active = false;
 
     public static TeamArena get(Object oid) {

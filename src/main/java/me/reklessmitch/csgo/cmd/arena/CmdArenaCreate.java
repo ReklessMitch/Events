@@ -7,6 +7,7 @@ import me.reklessmitch.csgo.Perm;
 import me.reklessmitch.csgo.cmd.ArenaCommand;
 import me.reklessmitch.csgo.colls.FFAArenaColl;
 import me.reklessmitch.csgo.colls.FlowerPowerArenaColl;
+import me.reklessmitch.csgo.colls.SpleefArenaColl;
 
 public class CmdArenaCreate extends ArenaCommand {
 
@@ -24,6 +25,7 @@ public class CmdArenaCreate extends ArenaCommand {
         switch(arenaType){
             case "FFA" -> FFAArenaColl.get().create(arenaName);
             case "FP" -> FlowerPowerArenaColl.get().create(arenaName);
+            case "SPLEEF" -> SpleefArenaColl.get().create(arenaName);
             default -> this.msg("Invalid arena type");
         }
         this.msg("Arena " + arenaName + " created!");

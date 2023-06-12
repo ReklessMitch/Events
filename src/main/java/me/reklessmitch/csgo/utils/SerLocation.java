@@ -1,10 +1,11 @@
 package me.reklessmitch.csgo.utils;
 
+import com.sk89q.worldedit.math.BlockVector3;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-public class SpawnLocation {
+public class SerLocation {
 
     String worldName;
     double x;
@@ -13,13 +14,17 @@ public class SpawnLocation {
     float yaw;
     float pitch;
 
-    public SpawnLocation(Location location) {
+    public SerLocation(Location location) {
         this.worldName = location.getWorld().getName();
         this.x = location.getX();
         this.y = location.getY();
         this.z = location.getZ();
         this.yaw = location.getYaw();
         this.pitch = location.getPitch();
+    }
+
+    public BlockVector3 getVector3(){
+        return BlockVector3.at(x, y, z);
     }
 
     public Location getLocation(){

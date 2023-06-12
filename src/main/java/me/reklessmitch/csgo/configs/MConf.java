@@ -11,7 +11,7 @@ import java.util.List;
 @Getter
 @EditorName("config")
 public class MConf extends Entity<MConf> {
-    protected static MConf i;
+    public static MConf i;
     public static MConf get() { return i; }
 
     String spleefShovelName = "&aSpleef Shovel";

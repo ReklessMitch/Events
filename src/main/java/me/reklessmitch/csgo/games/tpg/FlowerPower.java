@@ -1,16 +1,17 @@
 package me.reklessmitch.csgo.games.tpg;
 
+import com.massivecraft.massivecore.mixin.MixinMessage;
+import com.massivecraft.massivecore.util.MUtil;
 import me.reklessmitch.csgo.MiniGames;
 import me.reklessmitch.csgo.configs.FlowerPowerArena;
-import me.reklessmitch.csgo.games.Game;
 import me.reklessmitch.csgo.games.TwoPlayerGame;
-import me.reklessmitch.csgo.utils.SpawnLocation;
+import me.reklessmitch.csgo.utils.SerLocation;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.HandlerList;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -20,10 +21,19 @@ import java.util.*;
 public class FlowerPower extends TwoPlayerGame {
 
     FlowerPowerArena arena;
-    private final Random random = new Random();
     private static final Material seed = Material.WHEAT_SEEDS;
     Map<Player, List<Material>> playersFlowers;
-    List<Material> flowerPowerValues = List.of(Material.POPPY, Material.BLUE_ORCHID, Material.DANDELION, Material.ORANGE_TULIP, Material.WITHER_ROSE, Material.WHITE_TULIP, Material.PINK_TULIP, Material.ROSE_BUSH);
+    List<Block> blocksToBeRemoved = new ArrayList<>();
+    List<Material> flowerPowerValues = List.of(
+            Material.POPPY,
+            Material.BLUE_ORCHID,
+            Material.DANDELION,
+            Material.ORANGE_TULIP,
+            Material.WITHER_ROSE,
+            Material.WHITE_TULIP,
+            Material.PINK_TULIP,
+            Material.ROSE_BUSH,
+            Material.CORNFLOWER);
 
     public FlowerPower(FlowerPowerArena arena) {
         this.arena = arena;
@@ -60,9 +70,21 @@ public class FlowerPower extends TwoPlayerGame {
     }
 
     public void resetFlowers() {
-        this.playersFlowers = Map.of(
-                getPlayers().get(0), new ArrayList<>());
+        this.playersFlowers = new HashMap<>();
+        this.getPlayers().forEach(player -> this.playersFlowers.put(player, new ArrayList<>()));
         // @todo add other player
+    }
+
+    @Override
+    public void end() {
+        Bukkit.broadcastMessage("Someone won!");
+        arena.setActive(false);
+        setActive(false);
+        getPlayers().clear();
+        getPlayers().forEach(player -> player.teleport(Bukkit.getWorld("world").getSpawnLocation()));
+        resetFlowers();
+        resetLocations();
+        arena.changed();
     }
 
     @Override
@@ -75,13 +97,8 @@ public class FlowerPower extends TwoPlayerGame {
         }
     }
 
-    public void resetLocations(List<SpawnLocation> locations){
-        locations.forEach(location -> {
-            Block block = location.getLocation().getBlock();
-            block.setType(Material.FARMLAND);
-            // get block above and set to air
-            block.getRelative(0, 1, 0).setType(Material.AIR);
-        });
+    public void resetLocations(){
+        blocksToBeRemoved.forEach(block -> block.setType(Material.AIR));
     }
 
     public void resetInventories(){
@@ -94,23 +111,17 @@ public class FlowerPower extends TwoPlayerGame {
     public void newRound() {
         Bukkit.broadcastMessage("New Round");
         resetFlowers();
-        resetLocations(arena.getRedSpawnPoints());
-        resetLocations(arena.getBlueSpawnPoints());
+        resetLocations();
         resetInventories();
     }
 
     public boolean checkIfAllPlaced() {
         for (Map.Entry<Player, List<Material>> entry : playersFlowers.entrySet()) {
             List<Material> flowers = entry.getValue();
-
             if (flowers.size() < 5) {
-                Bukkit.broadcastMessage("Not all placed: " + flowers.size());
                 return false; // At least one player hasn't placed enough flowers
-            } else {
-                Bukkit.broadcastMessage("All placed: " + flowers.size());
             }
         }
-
         return true; // All players have placed enough flowers
     }
 
@@ -119,8 +130,9 @@ public class FlowerPower extends TwoPlayerGame {
         if (!getPlayers().contains(event.getPlayer())) return;
         if (event.getItemInHand().getType() == seed) {
             Bukkit.getScheduler().runTaskLater(MiniGames.get(), () -> {
-                Material flower = flowerPowerValues.get(random.nextInt(flowerPowerValues.size()));
+                Material flower = MUtil.random(flowerPowerValues);
                 event.getBlock().setType(flower);
+                blocksToBeRemoved.add(event.getBlock());
                 playersFlowers.get(event.getPlayer()).add(flower);
                 if (checkIfAllPlaced()){
                     if (someoneHasBlackFlower()) {newRound();
@@ -138,6 +150,6 @@ public class FlowerPower extends TwoPlayerGame {
                 Bukkit.broadcastMessage(countEntry.getKey().name() + " " + countEntry.getValue());
             }
         }
-        Bukkit.broadcastMessage("Someone won!");
+        end();
     }
 }

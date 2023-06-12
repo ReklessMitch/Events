@@ -7,11 +7,10 @@ import me.reklessmitch.csgo.cmd.other.CmdCSGOShop;
 import me.reklessmitch.csgo.cmd.other.CmdCreateGames;
 import me.reklessmitch.csgo.cmd.other.CmdGamesGUI;
 import me.reklessmitch.csgo.cmd.kits.CmdKit;
-import me.reklessmitch.csgo.colls.FFAArenaColl;
-import me.reklessmitch.csgo.colls.FlowerPowerArenaColl;
-import me.reklessmitch.csgo.colls.KitColl;
-import me.reklessmitch.csgo.colls.MConfColl;
+import me.reklessmitch.csgo.colls.*;
+import me.reklessmitch.csgo.configs.SpleefArena;
 import me.reklessmitch.csgo.games.Game;
+import me.reklessmitch.csgo.games.ffa.Spleef;
 import me.reklessmitch.csgo.games.tpg.FlowerPower;
 import org.bukkit.Bukkit;
 
@@ -36,10 +35,11 @@ public final class MiniGames extends MassivePlugin {
     public void onEnableInner(){
         i = this;
         this.activate(
+                MConfColl.class,
                 KitColl.class,
                 FlowerPowerArenaColl.class,
+                SpleefArenaColl.class,
                 FFAArenaColl.class,
-                MConfColl.class,
                 // Cmds
                 CmdArena.class,
                 CmdKit.class,
@@ -60,7 +60,12 @@ public final class MiniGames extends MassivePlugin {
             if (!arena.isActive()) {
                 FlowerPower game = new FlowerPower(arena);
                 games.add(game);
-                game.start();
+            }
+        });
+        SpleefArenaColl.get().getAll().forEach(arena -> {
+            if (!arena.isActive()) {
+                Spleef game = new Spleef(arena);
+                games.add(game);
             }
         });
     }
@@ -69,6 +74,7 @@ public final class MiniGames extends MassivePlugin {
     @Override
     public void onDisable(){
         super.onDisable();
+        games.forEach(game -> game.setActive(false));
         i = null;
     }
 

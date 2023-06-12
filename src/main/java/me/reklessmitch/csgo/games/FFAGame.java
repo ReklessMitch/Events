@@ -2,6 +2,10 @@ package me.reklessmitch.csgo.games;
 
 import me.reklessmitch.csgo.configs.FFAArena;
 import me.reklessmitch.csgo.configs.Kit;
+import me.reklessmitch.csgo.utils.SerLocation;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class FFAGame extends Game{
 
@@ -9,9 +13,8 @@ public class FFAGame extends Game{
     // FFA
     // OIAC -> Extend (One in the chamber)
 
-
+    List<SerLocation> spawnLocations = new ArrayList<>();
     int maxPlayers = 50;
-    FFAArena arena;
     Kit kit;
 
     public FFAGame() {

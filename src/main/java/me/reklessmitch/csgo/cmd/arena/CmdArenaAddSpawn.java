@@ -25,12 +25,6 @@ public class CmdArenaAddSpawn extends ArenaCommand {
             this.msg("Team cannot be null");
             return;
         }
-        FFAArena FFAArena = FFAArena.get(arenaName);
-//        if(arena.addSpawnPoint(team, ((Player) sender).getLocation())){
-//            this.msg("Arena " + arenaName + ": spawn added for " + team);
-//        }else{
-//            this.msg("Arena " + arenaName + " max teams reached!");
-//        }
     }
 }
 

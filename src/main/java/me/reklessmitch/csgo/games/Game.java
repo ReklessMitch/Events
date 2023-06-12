@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.*;
 
@@ -29,6 +30,8 @@ public class Game extends Engine {
     public void start() {
     }
 
+    public void end(){
+    }
 
     public void addPlayer(Player player){
         players.add(player);
@@ -37,16 +40,24 @@ public class Game extends Engine {
 
     public void removePlayer(Player player) {
         players.remove(player);
+        if(players.size() == 1){
+            end();
+        }
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onPlayerDeath(PlayerDeathEvent event){
-        players.remove(event.getPlayer());
+        removePlayer(event.getPlayer());
     }
 
+    @EventHandler(ignoreCancelled = true)
+    public void onTeleport(PlayerTeleportEvent event){
+        if(event.getCause().equals(PlayerTeleportEvent.TeleportCause.PLUGIN)) return;
+        removePlayer(event.getPlayer());
+    }
 
     @EventHandler(ignoreCancelled = true)
     public void onLogout(PlayerQuitEvent event) {
-        players.remove(event.getPlayer());
+        removePlayer(event.getPlayer());
     }
 }

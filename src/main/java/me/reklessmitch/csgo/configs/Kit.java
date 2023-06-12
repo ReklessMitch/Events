@@ -29,12 +29,12 @@ public class Kit extends Entity<Kit> {
     }
 
     private ItemStack setGuiItem() {
-        ItemStack guiItem = new ItemStack(Material.STONE);
-        ItemMeta meta = guiItem.getItemMeta();
+        ItemStack i = new ItemStack(Material.STONE);
+        ItemMeta meta = i.getItemMeta();
         meta.setDisplayName("Revolver");
         meta.setLore(List.of("1x Revolver + 64 Ammo"));
-        guiItem.setItemMeta(meta);
-        return guiItem;
+        i.setItemMeta(meta);
+        return i;
     }
 
     public void setInventory(ItemStack[] contents) {
