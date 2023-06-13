@@ -66,8 +66,11 @@ public class Element extends TwoPlayerGame {
     }
 
     private void getWinner() {
-        ItemStack p1Choice = choice.get(getPlayers().get(0));
-        ItemStack p2Choice = choice.get(getPlayers().get(1));
+        Player player1 = getPlayers().stream().toList().get(0);
+        Player player2 = getPlayers().stream().toList().get(1);
+
+        ItemStack p1Choice = choice.get(player1);
+        ItemStack p2Choice = choice.get(player2);
 
         if(p1Choice.equals(p2Choice)){
             this.getPlayers().forEach(player -> player.sendMessage("You both picked the same thing, try again!"));
@@ -76,9 +79,9 @@ public class Element extends TwoPlayerGame {
             if(p1Choice.equals(rock) && p2Choice.equals(scissors) ||
                 (p1Choice.equals(scissors) && p2Choice.equals(paper)) ||
                 (p1Choice.equals(paper) && p2Choice.equals(rock))){
-                Bukkit.broadcastMessage(getPlayers().get(0) + " won!");
+                Bukkit.broadcastMessage(player1.name() + " won!");
             }else{
-                Bukkit.broadcastMessage(getPlayers().get(1) + " won!");
+                Bukkit.broadcastMessage(player2.name() + " won!");
             }
         }
 

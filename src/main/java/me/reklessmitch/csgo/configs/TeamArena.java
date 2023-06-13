@@ -14,7 +14,7 @@ import java.util.Map;
 @Getter
 public class TeamArena extends Entity<TeamArena> {
 
-    Map<String, List<SerLocation>> teamSpawns;
+    Map<Integer, List<SerLocation>> teamSpawns;
     boolean active = false;
 
     public static TeamArena get(Object oid) {

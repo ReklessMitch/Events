@@ -86,6 +86,13 @@
         </dependency>
         <dependency>
             <groupId>me.reklessmitch</groupId>
+            <artifactId>VoidTeleport</artifactId>
+            <version>LATEST</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/libs/VoidTeleport-2.4.2.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>me.reklessmitch</groupId>
             <artifactId>worldedit</artifactId>
             <version>LATEST</version>
             <scope>system</scope>

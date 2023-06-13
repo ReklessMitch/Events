@@ -3,7 +3,7 @@ package me.reklessmitch.csgo.guis;
 import com.massivecraft.massivecore.chestgui.ChestGui;
 import me.reklessmitch.csgo.MiniGames;
 import me.reklessmitch.csgo.games.Game;
-import me.reklessmitch.csgo.games.ffa.Spleef;
+import me.reklessmitch.csgo.games.other.Spleef;
 import me.reklessmitch.csgo.games.tpg.FlowerPower;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -24,7 +24,6 @@ public class GamesGUI extends ChestGui implements Listener {
     public GamesGUI(Player player) {
         Inventory inventory = Bukkit.createInventory(null, 18, "Games");
         games = MiniGames.get().getGames();
-        Bukkit.broadcastMessage("Games: " + games.size());
         games.forEach(game -> {
             if(game.isActive()) return;
             ItemStack itemStack;

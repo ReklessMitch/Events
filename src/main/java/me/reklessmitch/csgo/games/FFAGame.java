@@ -1,24 +1,25 @@
 package me.reklessmitch.csgo.games;
 
+import lombok.Getter;
 import me.reklessmitch.csgo.configs.FFAArena;
 import me.reklessmitch.csgo.configs.Kit;
-import me.reklessmitch.csgo.utils.SerLocation;
+import org.bukkit.entity.Player;
+import java.util.Map;
 
-import java.util.ArrayList;
-import java.util.List;
-
+@Getter
 public class FFAGame extends Game{
 
     // Spleef -> Extend
     // FFA
     // OIAC -> Extend (One in the chamber)
-
-    List<SerLocation> spawnLocations = new ArrayList<>();
+    Map<Player, Integer> kills;
+    FFAArena arena;
     int maxPlayers = 50;
     Kit kit;
 
-    public FFAGame() {
+    public FFAGame(FFAArena arena) {
         super();
+        this.arena = arena;
     }
 
     @Override

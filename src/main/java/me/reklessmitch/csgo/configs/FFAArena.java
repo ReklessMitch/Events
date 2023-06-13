@@ -4,6 +4,7 @@ import com.massivecraft.massivecore.store.Entity;
 import lombok.Getter;
 import lombok.Setter;
 import me.reklessmitch.csgo.colls.FFAArenaColl;
+import me.reklessmitch.csgo.utils.SerLocation;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -14,6 +15,7 @@ public class FFAArena extends Entity<FFAArena> {
 
     boolean active = false;
     Set<String> allowedKits = new HashSet<>();
+    List<SerLocation> spawnLocations = new ArrayList<>();
 
     public static FFAArena get(Object oid) {
         return FFAArenaColl.get().get(oid);

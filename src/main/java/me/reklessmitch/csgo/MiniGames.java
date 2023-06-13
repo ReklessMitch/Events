@@ -8,21 +8,24 @@ import me.reklessmitch.csgo.cmd.other.CmdCreateGames;
 import me.reklessmitch.csgo.cmd.other.CmdGamesGUI;
 import me.reklessmitch.csgo.cmd.kits.CmdKit;
 import me.reklessmitch.csgo.colls.*;
-import me.reklessmitch.csgo.configs.SpleefArena;
+import me.reklessmitch.csgo.configs.MConf;
 import me.reklessmitch.csgo.games.Game;
-import me.reklessmitch.csgo.games.ffa.Spleef;
+import me.reklessmitch.csgo.games.other.Spleef;
 import me.reklessmitch.csgo.games.tpg.FlowerPower;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 
 import java.util.*;
 
+@Getter
 public final class MiniGames extends MassivePlugin {
 
     private static MiniGames i;
     public static MiniGames get() { return i; }
 
-    @Getter List<Game> games = new ArrayList<>();
-
+    List<Game> games = new ArrayList<>();
+    World eventWorld;
+    World spawnWorld;
     int gameAmount = 0;
 
     public MiniGames() {
@@ -52,6 +55,9 @@ public final class MiniGames extends MassivePlugin {
         );
 
         // Every 10 minutes create more games.
+        eventWorld = Bukkit.getWorld(MConf.get().getEventWorld());
+        spawnWorld = Bukkit.getWorld(MConf.get().getSpawnWorld());
+
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, this::createGames, 0L, 12000L);
     }
 

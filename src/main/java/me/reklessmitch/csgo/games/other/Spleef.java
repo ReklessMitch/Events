@@ -1,4 +1,4 @@
-package me.reklessmitch.csgo.games.ffa;
+package me.reklessmitch.csgo.games.other;
 
 import com.massivecraft.massivecore.mixin.MixinTitle;
 import com.massivecraft.massivecore.util.ItemBuilder;
@@ -10,6 +10,7 @@ import me.reklessmitch.csgo.MiniGames;
 import me.reklessmitch.csgo.configs.MConf;
 import me.reklessmitch.csgo.configs.SpleefArena;
 import me.reklessmitch.csgo.games.FFAGame;
+import me.reklessmitch.csgo.games.Game;
 import me.reklessmitch.csgo.utils.Countdown;
 import me.reklessmitch.csgo.utils.SerLocation;
 import org.bukkit.Bukkit;
@@ -27,7 +28,7 @@ import java.util.List;
 import static org.bukkit.Material.BLUE_STAINED_GLASS;
 import static org.bukkit.Material.SNOW_BLOCK;
 
-public class Spleef extends FFAGame {
+public class Spleef extends Game {
 
     private final ItemStack shovel;
     private final ItemStack snowBall;
@@ -37,6 +38,7 @@ public class Spleef extends FFAGame {
         super();
         this.arena = arena;
         arena.setActive(true);
+
         shovel = new ItemBuilder(Material.DIAMOND_SHOVEL, ChatColor.translateAlternateColorCodes('&', MConf.get().getSpleefShovelName())).build();
         snowBall = new ItemBuilder(Material.SNOWBALL, ChatColor.translateAlternateColorCodes('&', MConf.get().getSpleefSnowballName())).build();
     }
@@ -46,13 +48,13 @@ public class Spleef extends FFAGame {
     public void end() {
         this.getPlayers().forEach(player -> {
             player.getInventory().clear();
-            player.teleport(Bukkit.getWorld("world").getSpawnLocation());
+            player.teleport(MiniGames.get().getSpawnWorld().getSpawnLocation());
         });
-        this.getPlayers().clear();
         Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&',
-                "&b&l" + this.getPlayers().get(0).name() + " &fwon the game!"));
+                "&b&l" + this.getPlayers().stream().findAny() + " &fwon the game!"));
         this.setActive(false);
         arena.setActive(false);
+        this.getPlayers().clear();
     }
 
     private void doCountdown(){

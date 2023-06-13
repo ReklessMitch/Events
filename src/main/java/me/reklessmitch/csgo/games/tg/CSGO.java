@@ -1,37 +1,59 @@
 package me.reklessmitch.csgo.games.tg;
 
+import com.massivecraft.massivecore.mixin.MixinTitle;
+import com.massivecraft.massivecore.util.MUtil;
+import me.reklessmitch.csgo.MiniGames;
 import me.reklessmitch.csgo.configs.TeamArena;
 import me.reklessmitch.csgo.games.TeamGame;
+import me.reklessmitch.csgo.guis.CSGOShop;
+import me.reklessmitch.csgo.utils.Countdown;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 
 public class CSGO extends TeamGame {
-    TeamArena arena;
-    int teamSize;
+    int teamSize = 1;
     int rounds = 12;
-
+    int teams = 2;
     int teamAScore = 0;
     int teamBScore = 0;
-
     int purchaseTime = 20; // time to freeze the player
 
 
     public CSGO(TeamArena arena) {
-        super();
-        this.arena = arena;
+        super(arena);
         arena.setActive(true);
     }
 
-    @Override
-    public void start() {
-        if(teamSize * 2 == getPlayers().size()) {
-            // clearInventories, set health, set hunger
-            // put players onto teams and tp them to spawnpoints
-            // freeze players for purchaseTime seconds (give them a countdown)
-            // open the gui to buy items
-            // when purchaseTime is up, unfreeze players, close gui
-            // start the round
-            // repeat until rounds is up
-            // swap sides after rounds / 2
-        }
+    public void findTeamAndSpawnPoint() {
+        getTeams().forEach((integer, players) -> players.forEach(player ->
+                MUtil.random(getArena().getTeamSpawns().get(integer))));
     }
 
+
+    public void newRound() {
+        findTeamAndSpawnPoint();
+        getPlayers().forEach(player -> {
+            resetPlayer(player);
+            CSGOShop shop = new CSGOShop(player);
+            new Countdown(purchaseTime).onTick(tick -> {
+                player.setWalkSpeed(0);
+                String titleText = ChatColor.GREEN + "Purchase Time: " + tick;
+                String subtitleText = ChatColor.GRAY + "Get ready!";
+                MixinTitle.get().sendTitleMessage(player, 0, 20, 0, titleText, subtitleText);
+            }).onComplete(() -> {
+                shop.getInventory().close();
+                player.setWalkSpeed(1);
+                MixinTitle.get().sendTitleMessage(player, 0, 20, 0, ChatColor.GREEN + "GO!", "");
+            });
+        });
+    }
+
+
+    @Override
+    public void start() {
+        if (teamSize * 2 == getPlayers().size()) {
+            newRound();
+        }
+    }
 }

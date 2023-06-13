@@ -2,6 +2,7 @@ package me.reklessmitch.csgo.games.tpg;
 
 import com.massivecraft.massivecore.mixin.MixinMessage;
 import com.massivecraft.massivecore.util.MUtil;
+import it.endlessgames.voidteleport.VoidTeleport;
 import me.reklessmitch.csgo.MiniGames;
 import me.reklessmitch.csgo.configs.FlowerPowerArena;
 import me.reklessmitch.csgo.games.TwoPlayerGame;
@@ -38,6 +39,7 @@ public class FlowerPower extends TwoPlayerGame {
     public FlowerPower(FlowerPowerArena arena) {
         this.arena = arena;
         arena.setActive(true);
+        this.setActive(true);
         // shouldnt be needed but is?
         Bukkit.getServer().getPluginManager().registerEvents(
                 this, MiniGames.get());
@@ -81,7 +83,7 @@ public class FlowerPower extends TwoPlayerGame {
         arena.setActive(false);
         setActive(false);
         getPlayers().clear();
-        getPlayers().forEach(player -> player.teleport(Bukkit.getWorld("world").getSpawnLocation()));
+        getPlayers().forEach(player -> player.teleport(MiniGames.get().getSpawnWorld().getSpawnLocation()));
         resetFlowers();
         resetLocations();
         arena.changed();
@@ -135,17 +137,27 @@ public class FlowerPower extends TwoPlayerGame {
                 blocksToBeRemoved.add(event.getBlock());
                 playersFlowers.get(event.getPlayer()).add(flower);
                 if (checkIfAllPlaced()){
-                    if (someoneHasBlackFlower()) {newRound();
-                    } else {checkWhoWon();}
+                    newRoundOrEnd();
                 }
             }, 100L);
         }
+    }
+
+    private void newRoundOrEnd() {
+        Bukkit.getScheduler().runTaskLater(MiniGames.get(), () -> {
+            if (someoneHasBlackFlower()) {
+                newRound();
+            } else {
+                checkWhoWon();
+            }
+        }, 30L);
     }
 
     private void checkWhoWon() {
         Map<Player, Map<Material, Integer>> flowerCounts = countFlowers(playersFlowers);
         for (Map.Entry<Player, Map<Material, Integer>> entry : flowerCounts.entrySet()) {
             Map<Material, Integer> countMap = entry.getValue();
+            Bukkit.broadcastMessage(entry.getKey().getName() + ":");
             for (Map.Entry<Material, Integer> countEntry : countMap.entrySet()) {
                 Bukkit.broadcastMessage(countEntry.getKey().name() + " " + countEntry.getValue());
             }

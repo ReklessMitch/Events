@@ -1,7 +1,7 @@
 package me.reklessmitch.csgo.games;
 
 import com.massivecraft.massivecore.Engine;
-import io.papermc.paper.event.player.PlayerArmSwingEvent;
+import it.endlessgames.voidteleport.api.VoidTeleportEvent;
 import lombok.Getter;
 import lombok.Setter;
 import me.reklessmitch.csgo.MiniGames;
@@ -9,7 +9,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.*;
 
@@ -21,7 +20,7 @@ public class Game extends Engine {
 
     @Setter boolean active = false;
     int gameID;
-    List<Player> players = new ArrayList<>();
+    Set<Player> players = new HashSet<>();
 
     public Game() {
         gameID = MiniGames.get().getNewGameID();
@@ -38,6 +37,12 @@ public class Game extends Engine {
         start();
     }
 
+    public void resetPlayer(Player player){
+        player.getInventory().clear();
+        player.setHealth(20);
+        player.setFoodLevel(20);
+    }
+
     public void removePlayer(Player player) {
         players.remove(player);
         if(players.size() == 1){
@@ -51,8 +56,7 @@ public class Game extends Engine {
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void onTeleport(PlayerTeleportEvent event){
-        if(event.getCause().equals(PlayerTeleportEvent.TeleportCause.PLUGIN)) return;
+    public void voidTPEvent(VoidTeleportEvent event){
         removePlayer(event.getPlayer());
     }
 
