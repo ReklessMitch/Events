@@ -3,18 +3,16 @@ package me.reklessmitch.csgo.games;
 import lombok.Getter;
 import me.reklessmitch.csgo.configs.FFAArena;
 import me.reklessmitch.csgo.configs.Kit;
-import org.bukkit.entity.Player;
+
+import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @Getter
 public class FFAGame extends Game{
 
-    // Spleef -> Extend
-    // FFA
-    // OIAC -> Extend (One in the chamber)
-    Map<Player, Integer> kills;
+    Map<UUID, Integer> kills = new HashMap<>();
     FFAArena arena;
-    int maxPlayers = 50;
     Kit kit;
 
     public FFAGame(FFAArena arena) {

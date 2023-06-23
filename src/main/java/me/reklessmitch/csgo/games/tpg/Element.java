@@ -1,7 +1,7 @@
 package me.reklessmitch.csgo.games.tpg;
 
 import com.massivecraft.massivecore.util.ItemBuilder;
-import me.reklessmitch.csgo.games.TwoPlayerGame;
+import me.reklessmitch.csgo.games.Game;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -11,20 +11,19 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Map;
+import java.util.UUID;
 
 // Basically RPS
-public class Element extends TwoPlayerGame {
+public class Element extends Game {
 
-    int prizePool;
     Inventory gui;
     private final ItemStack rock;
     private final ItemStack paper;
     private final ItemStack scissors;
-    Map<Player, ItemStack> choice;
+    Map<UUID, ItemStack> choice;
 
-    public Element(int prizePool) {
+    public Element() {
         super();
-        this.prizePool = prizePool;
         rock = new ItemBuilder(Material.COBBLESTONE, "&cRock").build();
         paper = new ItemBuilder(Material.PAPER, "&aPaper").build();
         scissors = new ItemBuilder(Material.COBBLESTONE, "&dScissors").build();
@@ -42,7 +41,7 @@ public class Element extends TwoPlayerGame {
     @Override
     public void start() {
         if(this.getPlayers().size() == 2) {
-            this.getPlayers().forEach(player -> player.openInventory(gui));
+            this.getPlayers().forEach(player -> Bukkit.getPlayer(player).openInventory(gui));
 
         }
     }
@@ -51,9 +50,9 @@ public class Element extends TwoPlayerGame {
     private void onInventoryClick(InventoryClickEvent event) {
         if(event.getClickedInventory() != gui) return;
         switch(event.getSlot()){
-            case 3 -> choice.put((Player) event.getWhoClicked(), rock);
-            case 5 -> choice.put((Player) event.getWhoClicked(), paper);
-            case 7 -> choice.put((Player) event.getWhoClicked(), scissors);
+            case 3 -> choice.put(event.getWhoClicked().getUniqueId(), rock);
+            case 5 -> choice.put(event.getWhoClicked().getUniqueId(), paper);
+            case 7 -> choice.put(event.getWhoClicked().getUniqueId(), scissors);
             default -> {
                 return;
             }
@@ -66,22 +65,23 @@ public class Element extends TwoPlayerGame {
     }
 
     private void getWinner() {
-        Player player1 = getPlayers().stream().toList().get(0);
-        Player player2 = getPlayers().stream().toList().get(1);
+
+        UUID player1 = getPlayers().stream().toList().get(0);
+        UUID player2 = getPlayers().stream().toList().get(1);
 
         ItemStack p1Choice = choice.get(player1);
         ItemStack p2Choice = choice.get(player2);
 
         if(p1Choice.equals(p2Choice)){
-            this.getPlayers().forEach(player -> player.sendMessage("You both picked the same thing, try again!"));
+            this.getPlayers().forEach(player -> Bukkit.getPlayer(player).sendMessage("You both picked the same thing, try again!"));
             start();
         }else{
             if(p1Choice.equals(rock) && p2Choice.equals(scissors) ||
                 (p1Choice.equals(scissors) && p2Choice.equals(paper)) ||
                 (p1Choice.equals(paper) && p2Choice.equals(rock))){
-                Bukkit.broadcastMessage(player1.name() + " won!");
+                Bukkit.broadcastMessage(player1 + " won!");
             }else{
-                Bukkit.broadcastMessage(player2.name() + " won!");
+                Bukkit.broadcastMessage(player2 + " won!");
             }
         }
 

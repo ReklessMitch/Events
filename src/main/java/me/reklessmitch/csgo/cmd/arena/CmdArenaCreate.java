@@ -5,9 +5,8 @@ import com.massivecraft.massivecore.command.requirement.RequirementHasPerm;
 import com.massivecraft.massivecore.command.type.primitive.TypeString;
 import me.reklessmitch.csgo.Perm;
 import me.reklessmitch.csgo.cmd.ArenaCommand;
-import me.reklessmitch.csgo.colls.FFAArenaColl;
-import me.reklessmitch.csgo.colls.FlowerPowerArenaColl;
-import me.reklessmitch.csgo.colls.SpleefArenaColl;
+import me.reklessmitch.csgo.colls.*;
+import me.reklessmitch.csgo.configs.*;
 
 public class CmdArenaCreate extends ArenaCommand {
 
@@ -22,11 +21,31 @@ public class CmdArenaCreate extends ArenaCommand {
     public void perform() throws MassiveException {
         String arenaName = this.readArg();
         String arenaType = this.readArg();
-        switch(arenaType){
-            case "FFA" -> FFAArenaColl.get().create(arenaName);
-            case "FP" -> FlowerPowerArenaColl.get().create(arenaName);
-            case "SPLEEF" -> SpleefArenaColl.get().create(arenaName);
-            default -> this.msg("Invalid arena type");
+        switch(arenaType.toLowerCase()){
+            case "ffa" -> {
+                FFAArena arena = FFAArenaColl.get().create(arenaName);
+                arena.setName(arenaName);
+            }
+            case "fp" -> {
+                FlowerPowerArena arena = FlowerPowerArenaColl.get().create(arenaName);
+                arena.setName(arenaName);
+            }
+            case "spleef" -> {
+                SpleefArena arena = SpleefArenaColl.get().create(arenaName);
+                arena.setName(arenaName);
+            }
+            case "tg" -> {
+                TeamArena arena = TeamArenaColl.get().create(arenaName);
+                arena.setName(arenaName);
+            }
+            case "parkour" -> {
+                ParkourArena arena = ParkourArenaColl.get().create(arenaName);
+                arena.setName(arenaName);
+            }
+            default -> {
+                this.msg("Invalid arena type");
+                return;
+            }
         }
         this.msg("Arena " + arenaName + " created!");
     }

@@ -6,6 +6,8 @@ import me.reklessmitch.csgo.configs.TeamArena;
 public class TeamArenaColl extends Coll<TeamArena> {
 
     private static final TeamArenaColl i = new TeamArenaColl();
-    public static TeamArenaColl get() { return i; }
+    public static TeamArenaColl get() {
+        return i;
+    }
 
 }

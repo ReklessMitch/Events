@@ -8,3 +8,4 @@ public class SpleefArenaColl extends Coll<SpleefArena> {
     private static final SpleefArenaColl i = new SpleefArenaColl();
     public static SpleefArenaColl get() { return i; }
 }
+

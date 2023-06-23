@@ -5,16 +5,19 @@ import lombok.Getter;
 import lombok.Setter;
 import me.reklessmitch.csgo.colls.TeamArenaColl;
 import me.reklessmitch.csgo.utils.SerLocation;
+import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Setter
 @Getter
 public class TeamArena extends Entity<TeamArena> {
 
-    Map<Integer, List<SerLocation>> teamSpawns;
+    String name = "";
+    List<SerLocation> team1Spawns = new ArrayList<>();
+    List<SerLocation> team2Spawns = new ArrayList<>();
     boolean active = false;
 
     public static TeamArena get(Object oid) {
@@ -26,5 +29,14 @@ public class TeamArena extends Entity<TeamArena> {
     {
         super.load(that);
         return this;
+    }
+
+    public void addSpawnLocation(int team, Location location) {
+        if(team == 1){
+            team1Spawns.add(new SerLocation(location));
+        }else if(team == 2){
+            team2Spawns.add(new SerLocation(location));
+        }
+        this.changed();
     }
 }

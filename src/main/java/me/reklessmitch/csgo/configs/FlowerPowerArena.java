@@ -5,19 +5,18 @@ import lombok.Getter;
 import lombok.Setter;
 import me.reklessmitch.csgo.colls.FlowerPowerArenaColl;
 import me.reklessmitch.csgo.utils.SerLocation;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
 public class FlowerPowerArena extends Entity<FlowerPowerArena> {
 
+    String name = "";
     boolean active = false;
-    SerLocation redSpawn = new SerLocation(new Location(Bukkit.getWorld("world"), 0, 0, 0));
-    SerLocation blueSpawn = new SerLocation(new Location(Bukkit.getWorld("world"), 0, 0, 0));
+    Set<SerLocation> spawns = new HashSet<>();
 
     public static FlowerPowerArena get(Object oid) {
         return FlowerPowerArenaColl.get().get(oid);
@@ -30,4 +29,8 @@ public class FlowerPowerArena extends Entity<FlowerPowerArena> {
         return this;
     }
 
+    public void addSpawnLocation(SerLocation location) {
+        spawns.add(location);
+        this.changed();
+    }
 }

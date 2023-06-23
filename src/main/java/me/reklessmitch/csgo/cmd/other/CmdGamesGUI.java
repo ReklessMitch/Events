@@ -17,6 +17,6 @@ public class CmdGamesGUI extends ArenaCommand {
 
     @Override
     public void perform() {
-        new GamesGUI((Player) sender);
+        new GamesGUI().open((Player) sender);
     }
 }

@@ -2,7 +2,6 @@ package me.reklessmitch.csgo.cmd.arena;
 
 import com.massivecraft.massivecore.MassiveException;
 import com.massivecraft.massivecore.command.requirement.RequirementHasPerm;
-import com.massivecraft.massivecore.command.type.primitive.TypeInteger;
 import com.massivecraft.massivecore.command.type.primitive.TypeString;
 import me.reklessmitch.csgo.Perm;
 import me.reklessmitch.csgo.cmd.ArenaCommand;

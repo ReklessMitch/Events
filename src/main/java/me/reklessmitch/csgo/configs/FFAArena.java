@@ -12,7 +12,7 @@ import java.util.*;
 @Getter
 @Setter
 public class FFAArena extends Entity<FFAArena> {
-
+    String name = "";
     boolean active = false;
     Set<String> allowedKits = new HashSet<>();
     List<SerLocation> spawnLocations = new ArrayList<>();

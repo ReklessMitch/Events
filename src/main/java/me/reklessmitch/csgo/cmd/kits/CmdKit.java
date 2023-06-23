@@ -6,7 +6,7 @@ public class CmdKit extends ArenaCommand {
     private static final CmdKit i = new CmdKit();
     public static CmdKit get() { return i; }
 
-    public CmdKitCreate createKit = new CmdKitCreate();
+    public final CmdKitCreate createKit = new CmdKitCreate();
 
     public CmdKit() {
         this.addAliases("ckit", "csgokit");

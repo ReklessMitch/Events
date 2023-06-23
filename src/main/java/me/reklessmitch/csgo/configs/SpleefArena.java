@@ -18,7 +18,8 @@ import java.util.Map;
 @Setter
 public class SpleefArena extends Entity<SpleefArena> {
 
-    SerLocation serLocation = new SerLocation(new Location(Bukkit.getWorld("world"), 0, 0, 0));
+    String name = "";
+    SerLocation spawnLocation = new SerLocation(new Location(Bukkit.getWorld(MConf.get().eventWorld), 0, 0, 0));
     boolean active = false;
     // List of floors
     int floorRadius = 25;

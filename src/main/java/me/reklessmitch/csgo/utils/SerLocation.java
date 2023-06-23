@@ -4,6 +4,9 @@ import com.sk89q.worldedit.math.BlockVector3;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.UUID;
 
 public class SerLocation {
 
@@ -31,7 +34,12 @@ public class SerLocation {
         return new Location(Bukkit.getWorld(worldName), x, y, z, yaw, pitch);
     }
 
-    public void teleport(Player player){
+    public void teleport(UUID playerID){
+        Player player = Bukkit.getPlayer(playerID);
+        if(player == null) {
+            Bukkit.broadcastMessage("Player is null - ERROR");
+            return;
+        }
         player.teleport(new Location(Bukkit.getWorld(worldName), x, y, z, yaw, pitch));
     }
 }

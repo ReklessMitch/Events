@@ -16,6 +16,7 @@ public class CmdCSGOShop extends ArenaCommand {
 
     @Override
     public void perform() {
-        new CSGOShop((Player) sender);
+        Player player = (Player) sender;
+        new CSGOShop().open(player.getUniqueId());
     }
 }
