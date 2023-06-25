@@ -25,6 +25,7 @@ public class Game extends Engine {
 
     boolean active = false;
     boolean isStarting = false;
+    boolean hasStarted = false;
     int gameID;
 
 
@@ -65,6 +66,7 @@ public class Game extends Engine {
         });
         players.clear();
         setActive(false);
+        MiniGames.get().createGames();
     }
 
     public void setAllPlayersToSurvival(){

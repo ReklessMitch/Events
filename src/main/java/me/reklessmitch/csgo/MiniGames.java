@@ -16,6 +16,7 @@ import me.reklessmitch.csgo.games.other.Parkour;
 import me.reklessmitch.csgo.games.other.Spleef;
 import me.reklessmitch.csgo.games.tg.CSGO;
 import me.reklessmitch.csgo.games.tpg.FlowerPoker;
+import me.reklessmitch.csgo.utils.NameTagHider;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
@@ -25,6 +26,7 @@ import java.util.*;
 public final class MiniGames extends MassivePlugin {
 
     private static MiniGames i;
+    NameTagHider nameTagHider;
     public static MiniGames get() { return i; }
 
     List<Game> games = new ArrayList<>();
@@ -42,6 +44,7 @@ public final class MiniGames extends MassivePlugin {
     @Override
     public void onEnableInner(){
         i = this;
+        nameTagHider = new NameTagHider(this);
         this.activate(
             MConfColl.class,
             KitColl.class,

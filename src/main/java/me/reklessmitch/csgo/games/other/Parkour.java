@@ -32,7 +32,7 @@ public class Parkour extends Game {
         this.arena = arena;
         arena.setActive(true);
         arena.changed();
-        setMaxPlayers(2);
+        setMaxPlayers(20);
         setDisplayItem(new DisplayItem(
                 Material.LIGHT_WEIGHTED_PRESSURE_PLATE,
                 "&c&lPARKOUR - " + arena.getName(),
@@ -43,10 +43,10 @@ public class Parkour extends Game {
         this.startLocation = arena.getStartLocation().getLocation();
     }
 
-    @Override
-    public void start() {
-        if(getPlayers().size() < getMaxPlayers()) return;
+    private void startGame(){
+        Bukkit.getServer().getPluginManager().registerEvents(this, MiniGames.get());
         // if its not but its above 2 then start a timer to start the game
+
         super.start();
         getPlayers().forEach(p -> {
             checkpoints.put(p, new ArrayList<>());
@@ -54,7 +54,24 @@ public class Parkour extends Game {
             resetPlayer(p);
         });
         doCountdown();
-        Bukkit.getServer().getPluginManager().registerEvents(this, MiniGames.get());
+    }
+
+    @Override
+    public void start() {
+        if (getPlayers().size() >= getMinPlayers() && !isStarting()){
+            setStarting(true);
+            new Countdown(30).onTick(tick -> {
+                if(tick % 5 == 0 || tick <= 5){
+                    getPlayers().forEach(p -> MixinTitle.get().sendTitleMessage(p, 0, 20, 0, "&7Game starting in...", "&c&l" + tick));
+                }
+            }).onComplete(() -> {
+                if(getPlayers().size() >= getMinPlayers()) startGame();
+                else {
+                    setStarting(false);
+                    getPlayers().forEach(p -> MixinTitle.get().sendTitleMessage(p, 0, 20, 0, "&c&lNot enough players!", "&7Game cancelled!"));
+                }
+            }).start(MiniGames.get());
+        }
     }
 
     @Override
@@ -97,7 +114,7 @@ public class Parkour extends Game {
     public void onPlayerMove(PlayerMoveEvent event){
         UUID playerID = event.getPlayer().getUniqueId();
         if(!getPlayers().contains(playerID)) return;
-        if(!isStarting()){
+        if(!isHasStarted()){
             event.setCancelled(true);
             return;
         }
@@ -120,10 +137,9 @@ public class Parkour extends Game {
 
     private void doCountdown(){
         new Countdown(15).onTick(tick ->
-                MixinTitle.get().sendTitleMessage(getPlayers(), 0, 20, 0,
-                        "&aParkour starting in: " + tick, "&7&lGet ready!"))
-        .onComplete(() -> setStarting(true)).start(MiniGames.get());
-
+                getPlayers().forEach(p -> MixinTitle.get().sendTitleMessage(p, 0, 20, 0,
+                        "&aParkour starting in: " + tick, "&7&lGet ready!")))
+        .onComplete(() -> setHasStarted(true)).start(MiniGames.get());
     }
 
 

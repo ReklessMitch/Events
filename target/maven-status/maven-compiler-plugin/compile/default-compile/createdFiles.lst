@@ -5,11 +5,13 @@ me\reklessmitch\csgo\games\other\Spleef.class
 me\reklessmitch\csgo\games\other\Parkour.class
 me\reklessmitch\csgo\utils\SerLocation.class
 me\reklessmitch\csgo\guis\SelectKitGUI.class
+me\reklessmitch\csgo\utils\NameTagHider.class
 me\reklessmitch\csgo\configs\TeamArena.class
 me\reklessmitch\csgo\cmd\arena\CmdSpleefAddFloor.class
 me\reklessmitch\csgo\cmd\arena\CmdArenaParkourAddCheckPoint.class
 me\reklessmitch\csgo\configs\FFAArena.class
 me\reklessmitch\csgo\colls\KitColl.class
+me\reklessmitch\csgo\MiniGames.class
 me\reklessmitch\csgo\utils\GameType.class
 me\reklessmitch\csgo\colls\ParkourArenaColl.class
 me\reklessmitch\csgo\guis\ElementGUI.class
@@ -18,6 +20,7 @@ me\reklessmitch\csgo\games\tpg\Element.class
 me\reklessmitch\csgo\colls\TeamArenaColl.class
 me\reklessmitch\csgo\utils\Countdown.class
 me\reklessmitch\csgo\cmd\other\CmdGetCustomData.class
+me\reklessmitch\csgo\cmd\arena\CmdLeave.class
 me\reklessmitch\csgo\guis\GamesGUI.class
 me\reklessmitch\csgo\utils\Countdown$TickAction.class
 me\reklessmitch\csgo\colls\MConfColl.class
@@ -31,6 +34,8 @@ me\reklessmitch\csgo\configs\SpleefArena.class
 me\reklessmitch\csgo\colls\FlowerPowerArenaColl.class
 me\reklessmitch\csgo\games\tpg\FlowerPoker.class
 me\reklessmitch\csgo\utils\ShopItem.class
+me\reklessmitch\csgo\utils\NameTagHider$1.class
+me\reklessmitch\csgo\games\tg\CSGO.class
 me\reklessmitch\csgo\guis\CSGOShop.class
 me\reklessmitch\csgo\games\ffa\HungerGames.class
 me\reklessmitch\csgo\colls\FFAArenaColl.class

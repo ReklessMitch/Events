@@ -11,9 +11,11 @@ public class CmdArena extends ArenaCommand {
     public final CmdSpleefAddFloor cmdSpleefAddFloor = new CmdSpleefAddFloor();
     public final CmdArenaTGAddSpawn cmdAddTGSpawn = new CmdArenaTGAddSpawn();
     public final CmdArenaParkourAddCheckPoint cmdArenaParkourAddCheckPoint = new CmdArenaParkourAddCheckPoint();
+    public final CmdLeave cmdLeave = new CmdLeave();
 
     public CmdArena() {
         this.addAliases("arena");
+        this.addChild(this.cmdLeave);
         this.addChild(this.arenaCreate);
         this.addChild(this.cmdArenaAddSpawn);
         this.addChild(this.cmdSpleefAddFloor);

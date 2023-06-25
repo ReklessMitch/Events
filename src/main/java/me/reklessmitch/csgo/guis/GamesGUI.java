@@ -28,7 +28,7 @@ public class GamesGUI extends ChestGui implements Listener {
     public void refreshGUI(Inventory inventory){
         int i = 0;
         for(Game game : MiniGames.get().getGames()){
-            if(game.isActive()) return;
+            if(game.isActive() || game.getPlayers().size() == game.getMaxPlayers()) return;
             games.put(game, i);
             inventory.setItem(i, game.getDisplay());
             i++;
@@ -47,6 +47,10 @@ public class GamesGUI extends ChestGui implements Listener {
             player.closeInventory();
             player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cGame no longer exists"));
             return;
+        }else if(game.getPlayers().size() == game.getMaxPlayers()){
+                player.closeInventory();
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cGame is full"));
+                return;
         }
         game.addPlayer(player, game.getDisplayItem().getItemName());
         player.closeInventory();

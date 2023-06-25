@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -48,24 +49,33 @@ public class OIAC extends FFAGame {
         Player player = Bukkit.getPlayer(playerID);
         player.getInventory().clear();
         player.getInventory().addItem(bow, arrow);
-        MUtil.random(getArena().getSpawnLocations()).teleport(playerID);
     }
 
     private void startGame(){
-        setStarting(true);
-        this.getPlayers().forEach(this::reset);
-
+        super.start();
         new Countdown(10)
-            .onTick(tick -> getPlayers().forEach(player -> Bukkit.getPlayer(player).sendTitle("Starting in", String.valueOf(tick))))
+            .onTick(tick -> getPlayers().forEach(player ->
+                    Bukkit.getPlayer(player).sendTitle("Starting in", String.valueOf(tick))))
             .onComplete(() -> getPlayers().forEach(player -> {
                 reset(player);
                 getKills().put(player, 0);
+                setStarting(true);
             })).start(MiniGames.get());
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerMove(PlayerMoveEvent event) {
+        UUID playerID = event.getPlayer().getUniqueId();
+        if (!getPlayers().contains(playerID)) return;
+        if (!isStarting()) {
+            event.setCancelled(true);
+        }
     }
 
     @EventHandler
     public void onRespawnEvent(PlayerRespawnEvent event){
         if(!getPlayers().contains(event.getPlayer().getUniqueId())) return;
+        event.setRespawnLocation(MUtil.random(getArena().getSpawnLocations()).getLocation());
         reset(event.getPlayer().getUniqueId());
     }
 
@@ -77,15 +87,15 @@ public class OIAC extends FFAGame {
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event){
-        if(event.getEntity().getKiller() == null || !getPlayers().contains(event.getPlayer().getUniqueId())) return;
+        if(!getPlayers().contains(event.getPlayer().getUniqueId()) || event.getEntity().getKiller() == null) return;
         Player killer = event.getEntity().getKiller();
         getKills().put(killer.getUniqueId(), getKills().get(killer.getUniqueId()) + 1);
         if(getKills().get(killer.getUniqueId()) >= scoreToWin){
             getPlayers().forEach(player -> Bukkit.getPlayer(player).sendTitle("Game Over", killer.getName() + " won!"));
             end();
         }
-
     }
+
     @EventHandler
     public void onBowShot(ProjectileHitEvent event){
         if(event.getEntity().getShooter() instanceof Player player && event.getEntity() instanceof Arrow){

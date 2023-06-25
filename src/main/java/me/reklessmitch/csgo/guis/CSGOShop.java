@@ -53,7 +53,7 @@ public class CSGOShop extends ChestGui implements Listener {
             player.sendMessage(ChatColor.RED + "You can't afford this item!");
             return false;
         }
-        pConfig.getCurrency(MConf.get().getCurrency()).take(cost);
+        pConfig.getCurrency(MConf.get().getCurrency()).take(player.getUniqueId(), cost);
         pConfig.changed();
         return true;
     }

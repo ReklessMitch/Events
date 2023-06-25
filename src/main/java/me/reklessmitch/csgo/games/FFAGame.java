@@ -22,7 +22,7 @@ public class FFAGame extends Game{
 
     @Override
     public void start() {
-        // Pick a kit, start the game
+        super.start();
     }
 
 }

@@ -3,6 +3,7 @@ package me.reklessmitch.csgo.games.tg;
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import com.massivecraft.massivecore.mixin.MixinTitle;
 import com.massivecraft.massivecore.util.MUtil;
+import me.neznamy.tab.shared.TAB;
 import me.reklessmitch.csgo.MiniGames;
 import me.reklessmitch.csgo.configs.MConf;
 import me.reklessmitch.csgo.configs.TeamArena;
@@ -10,6 +11,7 @@ import me.reklessmitch.csgo.games.Game;
 import me.reklessmitch.csgo.guis.CSGOShop;
 import me.reklessmitch.csgo.utils.Countdown;
 import me.reklessmitch.csgo.utils.DisplayItem;
+import me.reklessmitch.csgo.utils.NameTagHider;
 import me.reklessmitch.csgo.utils.SerLocation;
 import me.reklessmitch.mitchcurrency.configs.CPlayer;
 import org.bukkit.*;
@@ -19,7 +21,7 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.potion.PotionEffectType;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -34,7 +36,6 @@ public class CSGO extends Game {
     Map<UUID, Boolean> playersList = new HashMap<>();
     Set<UUID> tTeam = new HashSet<>();
     Set<UUID> ctTeam = new HashSet<>();
-    boolean roundStarted = false;
 
     public CSGO(TeamArena arena) {
         this.arena = arena;
@@ -45,7 +46,7 @@ public class CSGO extends Game {
                 List.of("&716 Round Gun Game"),
                 10000
         ));
-        setMaxPlayers(2);
+        setMaxPlayers(10);
         arena.setActive(true);
         arena.changed();
     }
@@ -83,20 +84,23 @@ public class CSGO extends Game {
             end();
             return;
         }
-        roundStarted = false;
+        setHasStarted(false);
         Bukkit.getScheduler().runTaskLater(MiniGames.get(), () -> {
             playersList.replaceAll((player, status) -> false);
             teleportPlayersToTeamSpawn(tTeam, arena.getTeam1Spawns());
             teleportPlayersToTeamSpawn(ctTeam, arena.getTeam2Spawns());
             setPlayersCurrency();
         }, 20L);
+
         if(tScore + ctScore == 0) {
-            MixinTitle.get().sendTitleMessage(getPlayers(), 0, 60, 0,
-                    ChatColor.RED + "CSGO", ChatColor.GRAY + "First to 16 wins");
+            getPlayers().forEach(p -> MixinTitle.get().sendTitleMessage(p, 0, 60, 0,
+                    ChatColor.RED + "CSGO", ChatColor.GRAY + "First to 16 wins"));
         }
-        Bukkit.getScheduler().runTaskLater(MiniGames.get(), this::openShop, 20L);
-
-
+        Bukkit.getScheduler().runTaskLater(MiniGames.get(), () -> {
+            openShop();
+            setAllPlayersToSurvival();
+            startRound();
+        }, 20L);
     }
 
     private void resetPlayersBossBar(){
@@ -104,8 +108,11 @@ public class CSGO extends Game {
             bossBar.getPlayers().forEach(player -> bossBar.removePlayer(player));
         }
     }
+
     private void updateBossBar(){
-        bossBar.setTitle("T " + tScore + " : CT" + ctScore);
+        bossBar.setTitle(ChatColor.RED + "TERRORIST - " + ChatColor.WHITE + tScore + ChatColor.GREEN + " vs " +
+                ChatColor.BLUE + "COUNTER TERRORIST - " + ChatColor.WHITE + ctScore);
+
         resetPlayersBossBar();
         getPlayers().forEach(player -> bossBar.addPlayer(Bukkit.getPlayer(player)));
     }
@@ -119,22 +126,46 @@ public class CSGO extends Game {
      * 6. When player dies, teleport to lobby or smt
      * 7. If all players of team are dead, add score, new round
      */
-
     @Override
     public void start() {
-        if(getPlayers().size() < getMaxPlayers()) return;
+        if (getPlayers().size() >= getMinPlayers() && !isStarting()){
+            setStarting(true);
+            new Countdown(30).onTick(tick -> {
+                if(tick % 5 == 0 || tick <= 5){
+                    getPlayers().forEach(p -> MixinTitle.get().sendTitleMessage(p, 0, 20, 0, "&7Game starting in...", "&c&l" + tick));
+                }
+            }).onComplete(() -> {
+                if(getPlayers().size() >= getMinPlayers()) startGame();
+                else {
+                    setStarting(false);
+                    getPlayers().forEach(p -> MixinTitle.get().sendTitleMessage(p, 0, 20, 0, "&c&lNot enough players!", "&7Game cancelled!"));
+                }
+            }).start(MiniGames.get());
+        }
+    }
+
+    private void startGame(){
         super.start();
         Bukkit.getServer().getPluginManager().registerEvents(this, MiniGames.get());
         getPlayers().forEach(player -> playersList.put(player, false));
 
         putPlayersOnTeam();
-        setPlayersCurrency();
+        hideNameTags();
+        resetPlayersCurrency();
         newRound();
     }
 
-    @EventHandler(ignoreCancelled = true)
-    public void jumpEvent(PlayerJumpEvent event){
-        if(getPlayers().contains(event.getPlayer().getUniqueId()) && !roundStarted) event.setCancelled(true);
+    private void resetPlayersCurrency() {
+        getPlayers().forEach(player -> CPlayer.get(player).getCurrency(MConf.get().getCurrency()).set(player, 0));
+
+    }
+
+    private void hideNameTags() {
+        NameTagHider hider = MiniGames.get().getNameTagHider();
+        ctTeam.forEach(ctPlayer -> tTeam.forEach(tPlayer -> {
+            hider.hideNametag(Bukkit.getPlayer(ctPlayer), Bukkit.getPlayer(tPlayer));
+            hider.hideNametag(Bukkit.getPlayer(tPlayer), Bukkit.getPlayer(ctPlayer));
+        }));
     }
 
     @Override
@@ -152,25 +183,30 @@ public class CSGO extends Game {
     }
 
     public void startRound(){
-        new Countdown(5).onTick(secondsLeft -> {
-            if(!isActive()) return;
-            getPlayers().forEach(player -> MixinTitle.get().sendTitleMessage(player, 0, 20, 0,
-                            "Starting in", String.valueOf(secondsLeft)));
-        }).onComplete(() -> roundStarted = true).start(MiniGames.get());
+        new Countdown(15)
+            .onTick(secondsLeft -> {
+                if(secondsLeft <= 5 || secondsLeft % 5 == 0){
+                    getPlayers().forEach(player -> MixinTitle.get().sendTitleMessage(player, 0, 20, 0,
+                            ChatColor.GRAY + "Round Begins in", ChatColor.RED + String.valueOf(secondsLeft) + "seconds"));
+                }
+            })
+            .onComplete(() -> setHasStarted(true)).start(MiniGames.get());
     }
 
     private void openShop(){
-        setAllPlayersToSurvival();
-
         for(UUID player : playersList.keySet()) {
-            Bukkit.getPlayer(player).addPotionEffect(PotionEffectType.SLOW.createEffect(20 * 20, 255));
             new CSGOShop().open(player);
         }
-        Bukkit.getScheduler().runTaskLater(MiniGames.get(), this::startRound, 20L * 15);
     }
 
     private void setPlayersCurrency(){
-        getPlayers().forEach(player -> CPlayer.get(player).getCurrency(MConf.get().getCurrency()).add(Bukkit.getPlayer(player), 1500));
+        getPlayers().forEach(player -> {
+            CPlayer.get(player).getCurrency(MConf.get().getCurrency()).add(
+                    player, 1500);
+            Bukkit.getPlayer(player).setHealth(20);
+            Bukkit.getPlayer(player).setFoodLevel(20);
+        });
+
     }
 
     private void teleportPlayersToTeamSpawn(Set<UUID> team, @NotNull List<SerLocation> spawns){
@@ -178,6 +214,7 @@ public class CSGO extends Game {
         if(spawn == null) return;
         team.forEach(spawn::teleport);
     }
+
 
     private void putPlayersOnTeam(){
         int midWayPoint = getPlayers().size() / 2;
@@ -212,8 +249,17 @@ public class CSGO extends Game {
         }
     }
 
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerMove(PlayerMoveEvent event) {
+        UUID playerID = event.getPlayer().getUniqueId();
+        if (!getPlayers().contains(playerID)) return;
+        if (!isHasStarted()) {
+            event.setCancelled(true);
+        }
+    }
+
     private void addCurrencyForKill(Player killer){
-        CPlayer.get(killer).getCurrency(MConf.get().getCurrency()).add(killer, 300);
+        CPlayer.get(killer).getCurrency(MConf.get().getCurrency()).add(killer.getUniqueId(), 300);
     }
     private void playerDied(Player player){
         player.setGameMode(GameMode.SPECTATOR);

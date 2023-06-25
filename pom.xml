@@ -99,6 +99,20 @@
             <systemPath>${basedir}/libs/FastAsyncWorldEdit-Bukkit-2.6.0-SNAPSHOT-396.jar</systemPath>
         </dependency>
         <dependency>
+            <groupId>me.reklessmitch</groupId>
+            <artifactId>ProtocolLib</artifactId>
+            <version>LATEST</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/libs/ProtocolLib.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>me.reklessmitch</groupId>
+            <artifactId>Tab</artifactId>
+            <version>LATEST</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/libs/TAB v3.3.2.jar</systemPath>
+        </dependency>
+        <dependency>
             <groupId>com.github.LoneDev6</groupId>
             <artifactId>api-itemsadder</artifactId>
             <version>3.4.1-r4</version>

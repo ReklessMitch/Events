@@ -22,6 +22,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
@@ -68,18 +69,20 @@ public class Spleef extends Game {
         this.setStarting(false);
     }
 
+
     private void doCountdown(){
-        new Countdown(15)
-                .onTick(tick -> {
-                    String titleText = ChatColor.GREEN + "Cooldown: " + tick;
-                    String subtitleText = ChatColor.GRAY + "Get ready!";
-                    getPlayers().forEach(player -> MixinTitle.get().sendTitleMessage(player, 0, 20, 0, titleText, subtitleText));})
-                .onComplete(() -> setupFloors(arena.getRemoveFloor(), Material.AIR))
-                .start(MiniGames.get());
+        new Countdown(15).onTick(tick ->
+                        getPlayers().forEach(p -> MixinTitle.get().sendTitleMessage(p, 0, 20, 0,
+                                "&aSpleef starting in: " + tick, "&7&lGet ready!")))
+                .onComplete(() -> {
+                    setHasStarted(true);
+                    setupFloors(arena.getRemoveFloor(), Material.AIR);
+                }).start(MiniGames.get());
     }
 
-    private void setUpGame(){
+    private void startGame(){
         super.start();
+        Bukkit.getServer().getPluginManager().registerEvents(this, MiniGames.get());
         setupFloors(arena.getRemoveFloor(), BLUE_STAINED_GLASS);
         setupFloors(arena.getFloors(), Material.SNOW_BLOCK);
         this.getPlayers().forEach(player -> {
@@ -108,26 +111,20 @@ public class Spleef extends Game {
 
     @Override
     public void start() {
-        if(this.getPlayers().size() >= 2){
-            if(isStarting()) return;
-            doStartCountDown();
-            Bukkit.getServer().getPluginManager().registerEvents(this, MiniGames.get());
+        if (getPlayers().size() >= getMinPlayers() && !isStarting()){
+            setStarting(true);
+            new Countdown(30).onTick(tick -> {
+                if(tick % 5 == 0 || tick <= 5){
+                    getPlayers().forEach(p -> MixinTitle.get().sendTitleMessage(p, 0, 20, 0, "&7Game starting in...", "&c&l" + tick));
+                }
+            }).onComplete(() -> {
+                if(getPlayers().size() >= getMinPlayers()) startGame();
+                else {
+                    setStarting(false);
+                    getPlayers().forEach(p -> MixinTitle.get().sendTitleMessage(p, 0, 20, 0, "&c&lNot enough players!", "&7Game cancelled!"));
+                }
+            }).start(MiniGames.get());
         }
-    }
-
-    private void doStartCountDown() {
-        setStarting(true);
-        new Countdown(20)
-                .onTick(tick -> {
-                    if(!isStarting()) return;
-                    String titleText = ChatColor.GREEN + "Spleef Starting in: " + tick;
-                    String subtitleText = ChatColor.GRAY + "Get ready!";
-                    getPlayers().forEach(player -> MixinTitle.get().sendTitleMessage(player, 0, 20, 0, titleText, subtitleText));})
-                .onComplete(() -> {
-                    getPlayers().forEach(player -> MixinTitle.get().sendTitleMessage(player, 0, 20, 0, ChatColor.GREEN + "GO!", ChatColor.GRAY + "Good luck!"));
-                    setUpGame();
-                })
-                .start(MiniGames.get());
     }
 
 
@@ -158,6 +155,14 @@ public class Spleef extends Game {
         }
     }
 
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerMove(PlayerMoveEvent event) {
+        UUID playerID = event.getPlayer().getUniqueId();
+        if (!getPlayers().contains(playerID)) return;
+        if (!isHasStarted()) {
+            event.setCancelled(true);
+        }
+    }
 
     @EventHandler(ignoreCancelled = true)
     public void onBreak(BlockBreakEvent e){
