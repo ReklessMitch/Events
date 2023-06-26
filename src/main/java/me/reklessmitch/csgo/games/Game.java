@@ -1,10 +1,12 @@
 package me.reklessmitch.csgo.games;
 
 import com.massivecraft.massivecore.Engine;
+import com.massivecraft.massivecore.mixin.MixinTitle;
 import it.endlessgames.voidteleport.api.VoidTeleportEvent;
 import lombok.Getter;
 import lombok.Setter;
 import me.reklessmitch.csgo.MiniGames;
+import me.reklessmitch.csgo.utils.Countdown;
 import me.reklessmitch.csgo.utils.DisplayItem;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -28,7 +30,6 @@ public class Game extends Engine {
     boolean hasStarted = false;
     int gameID;
 
-
     DisplayItem displayItem = new DisplayItem(Material.DIAMOND, "game", List.of("lore"), 0);
 
     Set<UUID> players = new HashSet<>();
@@ -51,9 +52,27 @@ public class Game extends Engine {
         return it;
     }
 
+    public void startGame(){}
+
     public void start() {
-        setAllPlayersToSurvival();
-        setActive(true);
+        if (getPlayers().size() >= getMinPlayers() && !isStarting()){
+            setStarting(true);
+            new Countdown(30).onTick(tick -> {
+                if(tick % 5 == 0 || tick <= 5){
+                    getPlayers().forEach(p -> MixinTitle.get().sendTitleMessage(p, 0, 20, 0, "&7Game starting in...", "&c&l" + tick));
+                }
+            }).onComplete(() -> {
+                if(getPlayers().size() >= getMinPlayers()) {
+                    setAllPlayersToSurvival();
+                    setActive(true);
+                    startGame();
+                }
+                else {
+                    setStarting(false);
+                    getPlayers().forEach(p -> MixinTitle.get().sendTitleMessage(p, 0, 20, 0, "&c&lNot enough players!", "&7Game cancelled!"));
+                }
+            }).start(MiniGames.get());
+        }
 
     }
 
@@ -122,7 +141,4 @@ public class Game extends Engine {
         event.getPlayer().teleport(MiniGames.get().getSpawnWorld().getSpawnLocation());
     }
 
-    public void setStarting(boolean b) {
-        isStarting = b;
-    }
 }

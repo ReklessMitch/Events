@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -27,7 +28,7 @@ public class Parkour extends Game {
     List<UUID> finished = new ArrayList<>();
     int maxWinners = 2;
 
-    public Parkour(ParkourArena arena) {
+    public Parkour(@NotNull ParkourArena arena) {
         super();
         this.arena = arena;
         arena.setActive(true);
@@ -43,11 +44,10 @@ public class Parkour extends Game {
         this.startLocation = arena.getStartLocation().getLocation();
     }
 
-    private void startGame(){
+    @Override
+    public void startGame(){
         Bukkit.getServer().getPluginManager().registerEvents(this, MiniGames.get());
-        // if its not but its above 2 then start a timer to start the game
 
-        super.start();
         getPlayers().forEach(p -> {
             checkpoints.put(p, new ArrayList<>());
             Bukkit.getPlayer(p).teleport(startLocation);
@@ -56,23 +56,6 @@ public class Parkour extends Game {
         doCountdown();
     }
 
-    @Override
-    public void start() {
-        if (getPlayers().size() >= getMinPlayers() && !isStarting()){
-            setStarting(true);
-            new Countdown(30).onTick(tick -> {
-                if(tick % 5 == 0 || tick <= 5){
-                    getPlayers().forEach(p -> MixinTitle.get().sendTitleMessage(p, 0, 20, 0, "&7Game starting in...", "&c&l" + tick));
-                }
-            }).onComplete(() -> {
-                if(getPlayers().size() >= getMinPlayers()) startGame();
-                else {
-                    setStarting(false);
-                    getPlayers().forEach(p -> MixinTitle.get().sendTitleMessage(p, 0, 20, 0, "&c&lNot enough players!", "&7Game cancelled!"));
-                }
-            }).start(MiniGames.get());
-        }
-    }
 
     @Override
     public void end() {

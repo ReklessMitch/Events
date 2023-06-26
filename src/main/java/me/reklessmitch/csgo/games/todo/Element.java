@@ -1,10 +1,9 @@
-package me.reklessmitch.csgo.games.tpg;
+package me.reklessmitch.csgo.games.todo;
 
 import com.massivecraft.massivecore.util.ItemBuilder;
 import me.reklessmitch.csgo.games.Game;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;

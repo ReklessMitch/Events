@@ -3,11 +3,8 @@ package me.reklessmitch.csgo;
 import com.massivecraft.massivecore.MassivePlugin;
 import lombok.Getter;
 import me.reklessmitch.csgo.cmd.arena.CmdArena;
-import me.reklessmitch.csgo.cmd.other.CmdCSGOShop;
-import me.reklessmitch.csgo.cmd.other.CmdCreateGames;
-import me.reklessmitch.csgo.cmd.other.CmdGamesGUI;
+import me.reklessmitch.csgo.cmd.other.*;
 import me.reklessmitch.csgo.cmd.kits.CmdKit;
-import me.reklessmitch.csgo.cmd.other.CmdGetCustomData;
 import me.reklessmitch.csgo.colls.*;
 import me.reklessmitch.csgo.configs.MConf;
 import me.reklessmitch.csgo.games.Game;
@@ -56,6 +53,7 @@ public final class MiniGames extends MassivePlugin {
             // Cmds
             CmdArena.class,
             CmdKit.class,
+            CmdSpawn.class,
             CmdCreateGames.class,
             CmdGamesGUI.class,
             CmdCSGOShop.class,

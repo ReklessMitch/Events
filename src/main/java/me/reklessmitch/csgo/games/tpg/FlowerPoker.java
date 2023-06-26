@@ -16,7 +16,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 
-
 import java.util.*;
 
 public class FlowerPoker extends Game {
@@ -75,7 +74,7 @@ public class FlowerPoker extends Game {
     }
 
     public boolean someoneHasBlackFlower() {
-        return this.playersFlowers.entrySet().stream().anyMatch(entry -> entry.getValue().contains(Material.WITHER_ROSE));//((entry.getValue()).contains(Material.WHITE_TULIP) || (entry.getValue()).contains(Material.WITHER_ROSE)));
+        return this.playersFlowers.entrySet().stream().anyMatch(entry -> entry.getValue().contains(Material.WITHER_ROSE));
     }
 
     public void resetFlowers() {
@@ -93,13 +92,6 @@ public class FlowerPoker extends Game {
         resetLocations();
     }
 
-    @Override
-    public void start() {
-        if (getPlayers().size() == 2) {
-            super.start();
-            newRound();
-        }
-    }
 
     public void resetLocations(){
         blocksToBeRemoved.forEach(block -> block.setType(Material.AIR));
@@ -113,7 +105,8 @@ public class FlowerPoker extends Game {
         });
     }
 
-    public void newRound() {
+    @Override
+    public void startGame() {
         resetFlowers();
         resetLocations();
         resetInventories();
@@ -163,7 +156,7 @@ public class FlowerPoker extends Game {
             if (someoneHasBlackFlower()) {
                 getPlayers().forEach(player -> MixinTitle.get().sendTitleMessage(player, 0, 20, 0,
                                 ChatColor.RED + "BLACK FLOWER", ChatColor.GRAY + "Forcing round restart!"));
-                Bukkit.getScheduler().runTaskLater(MiniGames.get(), this::newRound, 20L);
+                Bukkit.getScheduler().runTaskLater(MiniGames.get(), this::startGame, 20L);
             } else {
                 checkWhoWon();
             }
@@ -179,7 +172,7 @@ public class FlowerPoker extends Game {
         if (player1 == player2) {
             MixinTitle.get().sendTitleMessage(getPlayers(), 0, 20, 0,
                     ChatColor.GREEN + "DRAW", ChatColor.GRAY + "Restarting round!");
-            newRound();
+            startGame();
         } else {
             String winnerName = player1 > player2 ? Bukkit.getOfflinePlayer(players.get(0)).getName() : Bukkit.getOfflinePlayer(players.get(1)).getName();
             getPlayers().forEach(player -> Bukkit.getPlayer(player).sendMessage(

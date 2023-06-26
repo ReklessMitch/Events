@@ -80,8 +80,8 @@ public class Spleef extends Game {
                 }).start(MiniGames.get());
     }
 
-    private void startGame(){
-        super.start();
+    @Override
+    public void startGame(){
         Bukkit.getServer().getPluginManager().registerEvents(this, MiniGames.get());
         setupFloors(arena.getRemoveFloor(), BLUE_STAINED_GLASS);
         setupFloors(arena.getFloors(), Material.SNOW_BLOCK);
@@ -109,23 +109,6 @@ public class Spleef extends Game {
         }
     }
 
-    @Override
-    public void start() {
-        if (getPlayers().size() >= getMinPlayers() && !isStarting()){
-            setStarting(true);
-            new Countdown(30).onTick(tick -> {
-                if(tick % 5 == 0 || tick <= 5){
-                    getPlayers().forEach(p -> MixinTitle.get().sendTitleMessage(p, 0, 20, 0, "&7Game starting in...", "&c&l" + tick));
-                }
-            }).onComplete(() -> {
-                if(getPlayers().size() >= getMinPlayers()) startGame();
-                else {
-                    setStarting(false);
-                    getPlayers().forEach(p -> MixinTitle.get().sendTitleMessage(p, 0, 20, 0, "&c&lNot enough players!", "&7Game cancelled!"));
-                }
-            }).start(MiniGames.get());
-        }
-    }
 
 
     private void setupFloors(List<SerLocation> floors, Material removeFloor) {

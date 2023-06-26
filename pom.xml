@@ -113,6 +113,13 @@
             <systemPath>${basedir}/libs/TAB v3.3.2.jar</systemPath>
         </dependency>
         <dependency>
+            <groupId>me.reklessmitch</groupId>
+            <artifactId>LibsDisguses</artifactId>
+            <version>LATEST</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/libs/LibsDisguises-10.0.37-Free.jar</systemPath>
+        </dependency>
+        <dependency>
             <groupId>com.github.LoneDev6</groupId>
             <artifactId>api-itemsadder</artifactId>
             <version>3.4.1-r4</version>

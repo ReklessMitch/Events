@@ -2,7 +2,7 @@ package me.reklessmitch.csgo.guis;
 
 import com.massivecraft.massivecore.chestgui.ChestGui;
 import me.reklessmitch.csgo.MiniGames;
-import me.reklessmitch.csgo.games.tpg.Element;
+import me.reklessmitch.csgo.games.todo.Element;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

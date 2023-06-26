@@ -1,9 +1,9 @@
 package me.reklessmitch.csgo.games.tg;
 
-import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import com.massivecraft.massivecore.mixin.MixinTitle;
 import com.massivecraft.massivecore.util.MUtil;
-import me.neznamy.tab.shared.TAB;
+import me.libraryaddict.disguise.DisguiseAPI;
+import me.libraryaddict.disguise.disguisetypes.PlayerDisguise;
 import me.reklessmitch.csgo.MiniGames;
 import me.reklessmitch.csgo.configs.MConf;
 import me.reklessmitch.csgo.configs.TeamArena;
@@ -11,7 +11,6 @@ import me.reklessmitch.csgo.games.Game;
 import me.reklessmitch.csgo.guis.CSGOShop;
 import me.reklessmitch.csgo.utils.Countdown;
 import me.reklessmitch.csgo.utils.DisplayItem;
-import me.reklessmitch.csgo.utils.NameTagHider;
 import me.reklessmitch.csgo.utils.SerLocation;
 import me.reklessmitch.mitchcurrency.configs.CPlayer;
 import org.bukkit.*;
@@ -25,6 +24,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class CSGO extends Game {
 
@@ -117,34 +117,8 @@ public class CSGO extends Game {
         getPlayers().forEach(player -> bossBar.addPlayer(Bukkit.getPlayer(player)));
     }
 
-    /**
-     * 1. Get players onto split teams
-     * 2. Teleport players to spawn locations
-     * 3. Set players currencies
-     * 4. Open CSGO GUI Shop for X seconds
-     * 5. Start game, players can now move
-     * 6. When player dies, teleport to lobby or smt
-     * 7. If all players of team are dead, add score, new round
-     */
     @Override
-    public void start() {
-        if (getPlayers().size() >= getMinPlayers() && !isStarting()){
-            setStarting(true);
-            new Countdown(30).onTick(tick -> {
-                if(tick % 5 == 0 || tick <= 5){
-                    getPlayers().forEach(p -> MixinTitle.get().sendTitleMessage(p, 0, 20, 0, "&7Game starting in...", "&c&l" + tick));
-                }
-            }).onComplete(() -> {
-                if(getPlayers().size() >= getMinPlayers()) startGame();
-                else {
-                    setStarting(false);
-                    getPlayers().forEach(p -> MixinTitle.get().sendTitleMessage(p, 0, 20, 0, "&c&lNot enough players!", "&7Game cancelled!"));
-                }
-            }).start(MiniGames.get());
-        }
-    }
-
-    private void startGame(){
+    public void startGame(){
         super.start();
         Bukkit.getServer().getPluginManager().registerEvents(this, MiniGames.get());
         getPlayers().forEach(player -> playersList.put(player, false));
@@ -160,17 +134,27 @@ public class CSGO extends Game {
 
     }
 
-    private void hideNameTags() {
-        NameTagHider hider = MiniGames.get().getNameTagHider();
-        ctTeam.forEach(ctPlayer -> tTeam.forEach(tPlayer -> {
-            hider.hideNametag(Bukkit.getPlayer(ctPlayer), Bukkit.getPlayer(tPlayer));
-            hider.hideNametag(Bukkit.getPlayer(tPlayer), Bukkit.getPlayer(ctPlayer));
-        }));
+    private Set<Player> uuidToPlayer(Set<UUID> ids) {
+        return ids.stream()
+                .map(Bukkit::getPlayer)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
     }
+
+    private void hideNameTags(){
+        PlayerDisguise ctDisguise = new PlayerDisguise("ReklessMitch");
+        PlayerDisguise tDisguise = new PlayerDisguise("Jail");
+        tDisguise.setNameVisible(false);
+        ctDisguise.setNameVisible(false);
+        ctTeam.forEach(p -> DisguiseAPI.disguiseToPlayers(Bukkit.getPlayer(p), ctDisguise, uuidToPlayer(getPlayers())));
+        tTeam.forEach(p -> DisguiseAPI.disguiseToPlayers(Bukkit.getPlayer(p), tDisguise, uuidToPlayer(getPlayers())));
+    }
+
 
     @Override
     public void end() {
         super.end();
+
         arena.setActive(false);
         arena.changed();
         playersList = new HashMap<>();
@@ -179,7 +163,6 @@ public class CSGO extends Game {
         Bukkit.getScheduler().runTaskLater(MiniGames.get(), () ->
                 getPlayers().forEach(player -> MixinTitle.get().sendTitleMessage(player, 0, 30, 0,
                 message, "T:" + tScore + " - CT:" + ctScore)), 20L);
-
     }
 
     public void startRound(){
@@ -261,6 +244,7 @@ public class CSGO extends Game {
     private void addCurrencyForKill(Player killer){
         CPlayer.get(killer).getCurrency(MConf.get().getCurrency()).add(killer.getUniqueId(), 300);
     }
+
     private void playerDied(Player player){
         player.setGameMode(GameMode.SPECTATOR);
         player.getInventory().clear();

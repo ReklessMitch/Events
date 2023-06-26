@@ -1,7 +1,7 @@
-package me.reklessmitch.csgo.games.ffa;
+package me.reklessmitch.csgo.games.todo;
 
 import me.reklessmitch.csgo.configs.FFAArena;
-import me.reklessmitch.csgo.games.FFAGame;
+import me.reklessmitch.csgo.games.ffa.FFAGame;
 import org.bukkit.Location;
 
 public class HungerGames extends FFAGame {
