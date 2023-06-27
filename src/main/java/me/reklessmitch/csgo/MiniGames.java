@@ -14,6 +14,7 @@ import me.reklessmitch.csgo.games.other.Parkour;
 import me.reklessmitch.csgo.games.other.Spleef;
 import me.reklessmitch.csgo.games.tg.CSGO;
 import me.reklessmitch.csgo.games.todo.BattleRoyale;
+import me.reklessmitch.csgo.games.todo.MarioKart;
 import me.reklessmitch.csgo.games.tpg.FlowerPoker;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -68,7 +69,6 @@ public final class MiniGames extends MassivePlugin {
 
     public void createGames(){
         ArenaColl.get().getAll().forEach(arena -> {
-            Bukkit.broadcastMessage(arena.getName() + "creating games");
             if(arena.isActive()) return;
             List<String> allowedGames = arena.getAllowedGames();
             if(allowedGames.isEmpty()) return;
@@ -82,6 +82,7 @@ public final class MiniGames extends MassivePlugin {
                 case "csgo" -> game = new CSGO(arena);
                 case "parkour" -> game = new Parkour(arena);
                 case "br" -> game = new BattleRoyale(arena);
+                case "mc" -> game = new MarioKart(arena);
                 default -> game = null;
             }
             if(game == null) return;

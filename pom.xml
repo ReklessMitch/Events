@@ -107,6 +107,13 @@
         </dependency>
         <dependency>
             <groupId>me.reklessmitch</groupId>
+            <artifactId>ItemsAdder</artifactId>
+            <version>LATEST</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/libs/ItemsAdder_3.5.0c.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>me.reklessmitch</groupId>
             <artifactId>LibsDisguses</artifactId>
             <version>LATEST</version>
             <scope>system</scope>
