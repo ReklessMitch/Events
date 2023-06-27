@@ -5,8 +5,8 @@ import com.massivecraft.massivecore.util.MUtil;
 import me.libraryaddict.disguise.DisguiseAPI;
 import me.libraryaddict.disguise.disguisetypes.PlayerDisguise;
 import me.reklessmitch.csgo.MiniGames;
+import me.reklessmitch.csgo.configs.Arena;
 import me.reklessmitch.csgo.configs.MConf;
-import me.reklessmitch.csgo.configs.TeamArena;
 import me.reklessmitch.csgo.games.Game;
 import me.reklessmitch.csgo.guis.CSGOShop;
 import me.reklessmitch.csgo.utils.Countdown;
@@ -24,11 +24,10 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class CSGO extends Game {
 
-    TeamArena arena;
+    Arena arena;
     BossBar bossBar;
     int maxScore = 16;
     int tScore = 0;
@@ -37,7 +36,7 @@ public class CSGO extends Game {
     Set<UUID> tTeam = new HashSet<>();
     Set<UUID> ctTeam = new HashSet<>();
 
-    public CSGO(TeamArena arena) {
+    public CSGO(Arena arena) {
         this.arena = arena;
         this.bossBar = Bukkit.createBossBar(ChatColor.RED + "TERRORIST - " + ChatColor.WHITE + tScore + ChatColor.GREEN + " vs " + ChatColor.BLUE + "COUNTER TERRORIST - " + ChatColor.WHITE + ctScore, BarColor.RED, BarStyle.SOLID);
         setDisplayItem(new DisplayItem(

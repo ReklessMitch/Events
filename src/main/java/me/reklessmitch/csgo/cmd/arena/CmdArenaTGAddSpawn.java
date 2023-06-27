@@ -6,7 +6,7 @@ import com.massivecraft.massivecore.command.type.primitive.TypeInteger;
 import com.massivecraft.massivecore.command.type.primitive.TypeString;
 import me.reklessmitch.csgo.Perm;
 import me.reklessmitch.csgo.cmd.ArenaCommand;
-import me.reklessmitch.csgo.configs.TeamArena;
+import me.reklessmitch.csgo.configs.Arena;
 
 public class CmdArenaTGAddSpawn extends ArenaCommand {
 
@@ -25,8 +25,8 @@ public class CmdArenaTGAddSpawn extends ArenaCommand {
             msg("Invalid team number");
             return;
         }
-        TeamArena arena = TeamArena.get(arenaName);
+        Arena arena = Arena.get(arenaName);
         arena.addSpawnLocation(team, me.getLocation());
-
+        arena.changed();
     }
 }

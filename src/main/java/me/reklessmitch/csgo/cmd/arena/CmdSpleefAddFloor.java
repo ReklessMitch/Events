@@ -5,8 +5,9 @@ import com.massivecraft.massivecore.command.requirement.RequirementHasPerm;
 import com.massivecraft.massivecore.command.type.primitive.TypeString;
 import me.reklessmitch.csgo.Perm;
 import me.reklessmitch.csgo.cmd.ArenaCommand;
-import me.reklessmitch.csgo.colls.SpleefArenaColl;
-import me.reklessmitch.csgo.configs.SpleefArena;
+import me.reklessmitch.csgo.colls.ArenaColl;
+import me.reklessmitch.csgo.configs.Arena;
+import org.bukkit.ChatColor;
 
 public class CmdSpleefAddFloor extends ArenaCommand {
 
@@ -19,7 +20,7 @@ public class CmdSpleefAddFloor extends ArenaCommand {
 
     @Override
     public void perform() throws MassiveException {
-        SpleefArena arena = SpleefArenaColl.get().get(this.readArg());
+        Arena arena = ArenaColl.get().get(this.readArg());
         String type = this.readArg();
         switch(type){
             case "add" -> arena.addFloor(me.getLocation());
@@ -29,7 +30,7 @@ public class CmdSpleefAddFloor extends ArenaCommand {
                 return;
             }
         }
-        msg("Floor added!");
+        msg(ChatColor.GREEN + "Floor added!");
         arena.changed();
     }
 }

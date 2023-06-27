@@ -3,7 +3,7 @@ package me.reklessmitch.csgo.games.tpg;
 import com.massivecraft.massivecore.mixin.MixinTitle;
 import com.massivecraft.massivecore.util.MUtil;
 import me.reklessmitch.csgo.MiniGames;
-import me.reklessmitch.csgo.configs.FlowerPowerArena;
+import me.reklessmitch.csgo.configs.Arena;
 import me.reklessmitch.csgo.games.Game;
 import me.reklessmitch.csgo.utils.DisplayItem;
 import me.reklessmitch.csgo.utils.SerLocation;
@@ -20,7 +20,7 @@ import java.util.*;
 
 public class FlowerPoker extends Game {
 
-    FlowerPowerArena arena;
+    Arena arena;
     private static final Material seed = Material.WHEAT_SEEDS;
     Map<UUID, List<Material>> playersFlowers;
 
@@ -36,7 +36,7 @@ public class FlowerPoker extends Game {
             Material.ROSE_BUSH,
             Material.CORNFLOWER);
 
-    public FlowerPoker(FlowerPowerArena arena) {
+    public FlowerPoker(Arena arena) {
         this.arena = arena;
         arena.setActive(true);
         arena.changed();
@@ -118,7 +118,7 @@ public class FlowerPoker extends Game {
     private void teleportPlayers() {
         List<UUID> players = getPlayers().stream().toList();
         int iterator = 0;
-        for(SerLocation spawn : arena.getSpawns()){
+        for(SerLocation spawn : arena.getSpawnPoints()){
             UUID player = players.get(iterator);
             spawn.teleport(player);
             iterator++;

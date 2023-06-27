@@ -15,10 +15,6 @@ public class MConf extends Entity<MConf> {
     public static MConf i;
     public static MConf get() { return i; }
 
-    boolean spleefEnabled = true;
-    boolean flowerPowerEnabled = true;
-    boolean ffaEnabled = true;
-
     String eventWorld = "Events";
     String spawnWorld = "GambleVerse";
     String brWorld = "BR";

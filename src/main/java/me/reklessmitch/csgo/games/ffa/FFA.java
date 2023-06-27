@@ -4,42 +4,56 @@ import com.massivecraft.massivecore.mixin.MixinTitle;
 import com.massivecraft.massivecore.util.MUtil;
 import lombok.Getter;
 import me.reklessmitch.csgo.MiniGames;
-import me.reklessmitch.csgo.configs.FFAArena;
+import me.reklessmitch.csgo.configs.Arena;
 import me.reklessmitch.csgo.configs.Kit;
 import me.reklessmitch.csgo.games.Game;
 import me.reklessmitch.csgo.guis.SelectKitGUI;
 import me.reklessmitch.csgo.utils.Countdown;
+import me.reklessmitch.csgo.utils.DisplayItem;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 @Getter
-public class FFAGame extends Game {
+public class FFA extends Game {
 
     Map<UUID, Integer> kills = new HashMap<>();
     int killsToWin = 3;
-    FFAArena arena;
+    Arena arena;
     Kit kit;
 
-    public FFAGame(FFAArena arena) {
+    public FFA(Arena arena) {
         super();
         this.arena = arena;
+        arena.setActive(true);
         arena.changed();
+        setDisplayItem(new DisplayItem(
+                Material.BOW,
+                "&c&lFFA - " + arena.getName(),
+                List.of("&7Last Man Standing wins!"),
+                0
+        ));
+        setMaxPlayers(20);
     }
 
 
     @Override
     public void startGame(){
         Bukkit.getServer().getPluginManager().registerEvents(this, MiniGames.get());
-        getPlayers().forEach(p -> MUtil.random(arena.getSpawnLocations()).teleport(p));
+        getPlayers().forEach(p -> MUtil.random(arena.getSpawnPoints()).teleport(p));
         SelectKitGUI kitGUI = new SelectKitGUI(arena.getAllowedKits());
         kitGUI.open(getPlayers());
         Bukkit.getScheduler().runTaskLater(MiniGames.get(), () -> {
@@ -90,7 +104,7 @@ public class FFAGame extends Game {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onRespawnEvent(PlayerRespawnEvent event){
         if(!getPlayers().contains(event.getPlayer().getUniqueId())) return;
-        event.setRespawnLocation(MUtil.random(arena.getSpawnLocations()).getLocation());
+        event.setRespawnLocation(MUtil.random(arena.getSpawnPoints()).getLocation());
     }
 
     @EventHandler
@@ -103,6 +117,18 @@ public class FFAGame extends Game {
             getPlayers().forEach(player -> Bukkit.getPlayer(player).sendTitle("Game Over", killer.getName() + " won!"));
             event.setCancelled(true);
             end();
+        }
+    }
+
+    @EventHandler
+    public void onBowShot(ProjectileHitEvent event){
+        if(!kit.getName().equals("OIAC")) return;
+        if(event.getEntity().getShooter() instanceof Player player && event.getEntity() instanceof Arrow){
+            if(!getPlayers().contains(player.getUniqueId())) return;
+            if(event.getHitEntity() instanceof Player hitPlayer){
+                hitPlayer.damage(1000);
+            }
+            player.getInventory().addItem(new ItemStack(Material.ARROW));
         }
     }
 

@@ -19,7 +19,7 @@ public class SelectKitGUI extends ChestGui implements Listener {
     @Getter private Map<String, Integer> votes = new HashMap<>();
     private Map<Integer, String> kitSlots = new HashMap<>();
 
-    public SelectKitGUI(Set<String> stringKits) {
+    public SelectKitGUI(List<String> stringKits) {
         List<Kit> kits = new ArrayList<>();
         stringKits.forEach(s -> kits.add(KitColl.get().get(s)));
         Inventory inventory = Bukkit.createInventory(null, 9, "Vote for a kit");

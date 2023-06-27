@@ -2,7 +2,7 @@ package me.reklessmitch.csgo.games.todo;
 
 import com.massivecraft.massivecore.mixin.MixinTitle;
 import me.reklessmitch.csgo.MiniGames;
-import me.reklessmitch.csgo.configs.BRArena;
+import me.reklessmitch.csgo.configs.Arena;
 import me.reklessmitch.csgo.configs.MConf;
 import me.reklessmitch.csgo.games.Game;
 import me.reklessmitch.csgo.utils.Countdown;
@@ -12,7 +12,6 @@ import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
@@ -22,7 +21,7 @@ import java.util.UUID;
 
 public class BattleRoyale extends Game {
 
-    BRArena arena;
+    Arena arena;
     int startBorderSize = 250;
     WorldBorder border;
     int reduceBorderEveryXMins = 10;
@@ -30,7 +29,7 @@ public class BattleRoyale extends Game {
     int gracePeriod = 10;
     boolean gracePeriodActive = true;
 
-    public BattleRoyale(BRArena arena){
+    public BattleRoyale(Arena arena){
         super();
         this.arena = arena;
         arena.setActive(true);
@@ -63,7 +62,7 @@ public class BattleRoyale extends Game {
     private void setupWorld(){
         World world = Bukkit.getWorld(MConf.get().getBrWorld());
         border = world.getWorldBorder();
-        border.setCenter(arena.getMiddleLocation().getLocation());
+        border.setCenter(arena.getSpawnPoint().getLocation());
         border.setSize(startBorderSize);
         world.setTime(1000);
         world.setDifficulty(Difficulty.PEACEFUL);
@@ -78,7 +77,8 @@ public class BattleRoyale extends Game {
     }
 
     private void teleportToSpawns() {
-        TeleportUtils.spawnPlayersInRadius(arena.getMiddleLocation().getLocation(), 100, uuidToPlayer(getPlayers()));
+        int radius = (startBorderSize / 2) - 20;
+        TeleportUtils.spawnPlayersInRadius(arena.getSpawnPoint().getLocation(), radius, uuidToPlayer(getPlayers()));
         doStartCountDown();
     }
 

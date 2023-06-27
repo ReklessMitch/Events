@@ -7,8 +7,8 @@ import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import it.endlessgames.voidteleport.api.VoidTeleportEvent;
 import me.reklessmitch.csgo.MiniGames;
+import me.reklessmitch.csgo.configs.Arena;
 import me.reklessmitch.csgo.configs.MConf;
-import me.reklessmitch.csgo.configs.SpleefArena;
 import me.reklessmitch.csgo.games.Game;
 import me.reklessmitch.csgo.utils.Countdown;
 import me.reklessmitch.csgo.utils.DisplayItem;
@@ -36,9 +36,10 @@ public class Spleef extends Game {
 
     private final ItemStack shovel;
     private final ItemStack snowBall;
-    private final SpleefArena arena;
+    private final Arena arena;
+    private static final int FLOOR_RADIUS = 25;
 
-    public Spleef (SpleefArena arena){
+    public Spleef (Arena arena){
         super();
         this.arena = arena;
         arena.setActive(true);
@@ -86,7 +87,7 @@ public class Spleef extends Game {
         setupFloors(arena.getRemoveFloor(), BLUE_STAINED_GLASS);
         setupFloors(arena.getFloors(), Material.SNOW_BLOCK);
         this.getPlayers().forEach(player -> {
-            arena.getSpawnLocation().teleport(player);
+            arena.getSpawnPoint().teleport(player);
             Player p = Bukkit.getPlayer(player);
             p.getInventory().clear();
             p.getInventory().addItem(shovel);
@@ -112,10 +113,12 @@ public class Spleef extends Game {
 
 
     private void setupFloors(List<SerLocation> floors, Material removeFloor) {
-        try (EditSession session = WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(arena.getSpawnLocation().getLocation().getWorld()))) {
+        try (EditSession session = WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(arena.getSpawnPoint().getLocation().getWorld()))) {
             floors.forEach(serLocation -> {
-                session.makeCylinder(serLocation.getVector3(), BukkitAdapter.adapt(removeFloor.createBlockData()), arena.getFloorRadius(), 1, true);
-                session.makeHollowCylinder(serLocation.getVector3(), BukkitAdapter.adapt(Material.BEDROCK.createBlockData()), arena.getFloorRadius(), arena.getFloorRadius(),  1, 0);
+                session.makeCylinder(serLocation.getVector3(), BukkitAdapter.adapt(removeFloor.createBlockData()),
+                        FLOOR_RADIUS, 1, true);
+                session.makeHollowCylinder(serLocation.getVector3(), BukkitAdapter.adapt(Material.BEDROCK.createBlockData())
+                        , FLOOR_RADIUS, FLOOR_RADIUS,  1, 0);
             });
         } catch (Exception e) {
             e.printStackTrace();

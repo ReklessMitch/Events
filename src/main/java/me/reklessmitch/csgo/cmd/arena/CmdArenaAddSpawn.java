@@ -13,48 +13,25 @@ public class CmdArenaAddSpawn extends ArenaCommand {
 
     public CmdArenaAddSpawn() {
         this.addAliases("setspawn");
-        this.addParameter(TypeString.get(), "gameType", "(Spleef, CSGO, FP)");
         this.addParameter(TypeString.get(), "arenaname", "dusk");
         this.addRequirements(RequirementHasPerm.get(Perm.ADMIN));
     }
 
     @Override
     public void perform() throws MassiveException {
-        String gameType = this.readArg();
         String arenaName = this.readArg();
         SerLocation location = new SerLocation(me.getLocation());
-        if(gameType == null){
-            msg("Invalid game type: Format / arena setspawn (gameType) (arenaName)");
+        if(arenaName == null){
+            msg("Invalid Format / arena setspawn (arenaName)");
             return;
         }
-        switch (gameType.toLowerCase()) {
-            case "ffa" -> {
-                FFAArena fArena = FFAArena.get(arenaName);
-                fArena.getSpawnLocations().add(location);
-                fArena.changed();
-            }
-            case "spleef" -> {
-                SpleefArena sArena = SpleefArena.get(arenaName);
-                sArena.setSpawnLocation(location);
-                sArena.changed();
-            }
-            case "fp" -> {
-                FlowerPowerArena fpArena = FlowerPowerArena.get(arenaName);
-                fpArena.addSpawnLocation(location);
-                fpArena.changed();
-            }
-            case "parkour" -> {
-                ParkourArena pArena = ParkourArena.get(arenaName);
-                pArena.setStartLocation(location);
-                pArena.changed();
-            }
-            case "br" -> {
-                BRArena brArena = BRArena.get(arenaName);
-                brArena.setMiddleLocation(location);
-                brArena.changed();
-            }
-            default -> msg("Invalid game type - Not yet implemented!");
+        Arena arena = Arena.get(arenaName);
+        if(arena == null){
+            msg("Invalid arena name");
+            return;
         }
+        arena.addSpawnLocation(location);
+        arena.changed();
     }
 }
 

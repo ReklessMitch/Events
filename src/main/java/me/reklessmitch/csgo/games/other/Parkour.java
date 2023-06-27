@@ -3,7 +3,7 @@ package me.reklessmitch.csgo.games.other;
 import com.massivecraft.massivecore.mixin.MixinTitle;
 import it.endlessgames.voidteleport.api.VoidTeleportEvent;
 import me.reklessmitch.csgo.MiniGames;
-import me.reklessmitch.csgo.configs.ParkourArena;
+import me.reklessmitch.csgo.configs.Arena;
 import me.reklessmitch.csgo.games.Game;
 import me.reklessmitch.csgo.utils.Countdown;
 import me.reklessmitch.csgo.utils.DisplayItem;
@@ -22,13 +22,13 @@ import java.util.*;
 
 public class Parkour extends Game {
 
-    ParkourArena arena;
+    Arena arena;
     Map<UUID, List<Location>> checkpoints;
     Location startLocation;
     List<UUID> finished = new ArrayList<>();
     int maxWinners = 2;
 
-    public Parkour(@NotNull ParkourArena arena) {
+    public Parkour(@NotNull Arena arena) {
         super();
         this.arena = arena;
         arena.setActive(true);
@@ -40,14 +40,13 @@ public class Parkour extends Game {
                 List.of("&7Race to the end!", "", "&7Winners: " + maxWinners),
                 0
         ));
-        this.checkpoints = new HashMap<>();
-        this.startLocation = arena.getStartLocation().getLocation();
     }
 
     @Override
     public void startGame(){
         Bukkit.getServer().getPluginManager().registerEvents(this, MiniGames.get());
-
+        this.checkpoints = new HashMap<>();
+        this.startLocation = arena.getSpawnPoint().getLocation();
         getPlayers().forEach(p -> {
             checkpoints.put(p, new ArrayList<>());
             Bukkit.getPlayer(p).teleport(startLocation);

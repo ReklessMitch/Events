@@ -1,6 +1,7 @@
 package me.reklessmitch.csgo;
 
 import com.massivecraft.massivecore.MassivePlugin;
+import com.massivecraft.massivecore.util.MUtil;
 import lombok.Getter;
 import me.reklessmitch.csgo.cmd.arena.CmdArena;
 import me.reklessmitch.csgo.cmd.other.*;
@@ -8,18 +9,14 @@ import me.reklessmitch.csgo.cmd.kits.CmdKit;
 import me.reklessmitch.csgo.colls.*;
 import me.reklessmitch.csgo.configs.MConf;
 import me.reklessmitch.csgo.games.Game;
-import me.reklessmitch.csgo.games.ffa.OIAC;
+import me.reklessmitch.csgo.games.ffa.FFA;
 import me.reklessmitch.csgo.games.other.Parkour;
 import me.reklessmitch.csgo.games.other.Spleef;
 import me.reklessmitch.csgo.games.tg.CSGO;
 import me.reklessmitch.csgo.games.todo.BattleRoyale;
 import me.reklessmitch.csgo.games.tpg.FlowerPoker;
-import me.reklessmitch.csgo.utils.NameTagHider;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.player.PlayerLoginEvent;
 
 import java.util.*;
 
@@ -27,7 +24,6 @@ import java.util.*;
 public final class MiniGames extends MassivePlugin {
 
     private static MiniGames i;
-    NameTagHider nameTagHider;
     public static MiniGames get() { return i; }
 
     List<Game> games = new ArrayList<>();
@@ -47,16 +43,10 @@ public final class MiniGames extends MassivePlugin {
     public void onEnableInner(){
         i = this;
         Bukkit.getServer().getPluginManager().registerEvents(this, i);
-        nameTagHider = new NameTagHider(this);
         this.activate(
             MConfColl.class,
             KitColl.class,
-            FlowerPowerArenaColl.class,
-            SpleefArenaColl.class,
-            FFAArenaColl.class,
-            TeamArenaColl.class,
-            ParkourArenaColl.class,
-            BRArenaColl.class,
+            ArenaColl.class,
             // Cmds
             CmdArena.class,
             CmdKit.class,
@@ -77,68 +67,30 @@ public final class MiniGames extends MassivePlugin {
     }
 
     public void createGames(){
-        if(MConf.get().isFlowerPowerEnabled()) {
-            FlowerPowerArenaColl.get().getAll().forEach(arena -> {
-                if (!arena.isActive()) {
-                    games.add(new FlowerPoker(arena));
-                }
-            });
-        }
-        if(MConf.get().isSpleefEnabled()) {
-            SpleefArenaColl.get().getAll().forEach(arena -> {
-                if (!arena.isActive()) {
-                    games.add(new Spleef(arena));
-                }
-            });
-        }
-        if(MConf.get().isFfaEnabled()) {
-            FFAArenaColl.get().getAll().forEach(arena -> {
-                if (!arena.isActive()) {
-                    games.add(new OIAC(arena));
-                }
-            });
-        }
-        TeamArenaColl.get().getAll().forEach(arena -> {
-            if(!arena.isActive()){
-                games.add(new CSGO(arena));
+        ArenaColl.get().getAll().forEach(arena -> {
+            Bukkit.broadcastMessage(arena.getName() + "creating games");
+            if(arena.isActive()) return;
+            List<String> allowedGames = arena.getAllowedGames();
+            if(allowedGames.isEmpty()) return;
+            String gameChosen = MUtil.random(allowedGames);
+            if(gameChosen == null) return;
+            Game game;
+            switch(gameChosen){
+                case "spleef" -> game = new Spleef(arena);
+                case "flowerpoker" -> game = new FlowerPoker(arena);
+                case "ffa" -> game = new FFA(arena);
+                case "csgo" -> game = new CSGO(arena);
+                case "parkour" -> game = new Parkour(arena);
+                case "br" -> game = new BattleRoyale(arena);
+                default -> game = null;
             }
-        });
-
-        ParkourArenaColl.get().getAll().forEach(arena -> {
-            if(!arena.isActive()){
-                games.add(new Parkour(arena));
-            }
-        });
-
-        BRArenaColl.get().getAll().forEach(arena -> {
-            if(!arena.isActive()){
-                games.add(new BattleRoyale(arena));
-            }
+            if(game == null) return;
+            games.add(game);
         });
     }
 
     private void endAllArenas(){
-        SpleefArenaColl.get().getAll().forEach(arena -> {
-            arena.setActive(false);
-            arena.changed();
-        });
-        FlowerPowerArenaColl.get().getAll().forEach(arena -> {
-            arena.setActive(false);
-            arena.changed();
-        });
-        FFAArenaColl.get().getAll().forEach(arena -> {
-            arena.setActive(false);
-            arena.changed();
-        });
-        TeamArenaColl.get().getAll().forEach(arena -> {
-            arena.setActive(false);
-            arena.changed();
-        });
-        ParkourArenaColl.get().getAll().forEach(arena -> {
-            arena.setActive(false);
-            arena.changed();
-        });
-        BRArenaColl.get().getAll().forEach(arena -> {
+        ArenaColl.get().getAll().forEach(arena -> {
             arena.setActive(false);
             arena.changed();
         });

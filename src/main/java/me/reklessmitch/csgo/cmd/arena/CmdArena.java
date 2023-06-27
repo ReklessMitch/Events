@@ -10,7 +10,6 @@ public class CmdArena extends ArenaCommand {
     public final CmdArenaAddSpawn cmdArenaAddSpawn = new CmdArenaAddSpawn();
     public final CmdSpleefAddFloor cmdSpleefAddFloor = new CmdSpleefAddFloor();
     public final CmdArenaTGAddSpawn cmdAddTGSpawn = new CmdArenaTGAddSpawn();
-    public final CmdArenaParkourAddCheckPoint cmdArenaParkourAddCheckPoint = new CmdArenaParkourAddCheckPoint();
     public final CmdLeave cmdLeave = new CmdLeave();
 
     public CmdArena() {
@@ -20,6 +19,5 @@ public class CmdArena extends ArenaCommand {
         this.addChild(this.cmdArenaAddSpawn);
         this.addChild(this.cmdSpleefAddFloor);
         this.addChild(this.cmdAddTGSpawn);
-        this.addChild(this.cmdArenaParkourAddCheckPoint);
     }
 }
