@@ -6,10 +6,13 @@ C:\Users\Mitchell Harrison\Desktop\MainProjects\Events\src\main\java\me\reklessm
 C:\Users\Mitchell Harrison\Desktop\MainProjects\Events\src\main\java\me\reklessmitch\csgo\colls\MConfColl.java
 C:\Users\Mitchell Harrison\Desktop\MainProjects\Events\src\main\java\me\reklessmitch\csgo\cmd\other\CmdGetCustomData.java
 C:\Users\Mitchell Harrison\Desktop\MainProjects\Events\src\main\java\me\reklessmitch\csgo\cmd\ArenaCommand.java
+C:\Users\Mitchell Harrison\Desktop\MainProjects\Events\src\main\java\me\reklessmitch\csgo\cmd\other\CmdSpawn.java
 C:\Users\Mitchell Harrison\Desktop\MainProjects\Events\src\main\java\me\reklessmitch\csgo\games\tpg\FlowerPoker.java
+C:\Users\Mitchell Harrison\Desktop\MainProjects\Events\src\main\java\me\reklessmitch\csgo\utils\TeleportUtils.java
 C:\Users\Mitchell Harrison\Desktop\MainProjects\Events\src\main\java\me\reklessmitch\csgo\games\other\Parkour.java
 C:\Users\Mitchell Harrison\Desktop\MainProjects\Events\src\main\java\me\reklessmitch\csgo\cmd\kits\CmdKit.java
 C:\Users\Mitchell Harrison\Desktop\MainProjects\Events\src\main\java\me\reklessmitch\csgo\colls\ParkourArenaColl.java
+C:\Users\Mitchell Harrison\Desktop\MainProjects\Events\src\main\java\me\reklessmitch\csgo\games\todo\BattleRoyale.java
 C:\Users\Mitchell Harrison\Desktop\MainProjects\Events\src\main\java\me\reklessmitch\csgo\cmd\arena\CmdArenaTGAddSpawn.java
 C:\Users\Mitchell Harrison\Desktop\MainProjects\Events\src\main\java\me\reklessmitch\csgo\configs\SpleefArena.java
 C:\Users\Mitchell Harrison\Desktop\MainProjects\Events\src\main\java\me\reklessmitch\csgo\configs\FFAArena.java
@@ -34,6 +37,7 @@ C:\Users\Mitchell Harrison\Desktop\MainProjects\Events\src\main\java\me\reklessm
 C:\Users\Mitchell Harrison\Desktop\MainProjects\Events\src\main\java\me\reklessmitch\csgo\colls\FlowerPowerArenaColl.java
 C:\Users\Mitchell Harrison\Desktop\MainProjects\Events\src\main\java\me\reklessmitch\csgo\games\ffa\OIAC.java
 C:\Users\Mitchell Harrison\Desktop\MainProjects\Events\src\main\java\me\reklessmitch\csgo\utils\ShopItem.java
+C:\Users\Mitchell Harrison\Desktop\MainProjects\Events\src\main\java\me\reklessmitch\csgo\configs\BRArena.java
 C:\Users\Mitchell Harrison\Desktop\MainProjects\Events\src\main\java\me\reklessmitch\csgo\configs\TeamArena.java
 C:\Users\Mitchell Harrison\Desktop\MainProjects\Events\src\main\java\me\reklessmitch\csgo\cmd\other\CmdCSGOShop.java
 C:\Users\Mitchell Harrison\Desktop\MainProjects\Events\src\main\java\me\reklessmitch\csgo\configs\ParkourArena.java
@@ -47,3 +51,4 @@ C:\Users\Mitchell Harrison\Desktop\MainProjects\Events\src\main\java\me\reklessm
 C:\Users\Mitchell Harrison\Desktop\MainProjects\Events\src\main\java\me\reklessmitch\csgo\games\tg\CSGO.java
 C:\Users\Mitchell Harrison\Desktop\MainProjects\Events\src\main\java\me\reklessmitch\csgo\cmd\kits\CmdKitCreate.java
 C:\Users\Mitchell Harrison\Desktop\MainProjects\Events\src\main\java\me\reklessmitch\csgo\games\todo\Element.java
+C:\Users\Mitchell Harrison\Desktop\MainProjects\Events\src\main\java\me\reklessmitch\csgo\colls\BRArenaColl.java

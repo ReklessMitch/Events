@@ -1,6 +1,7 @@
 me\reklessmitch\csgo\configs\Kit.class
 me\reklessmitch\csgo\cmd\ArenaCommand.class
 me\reklessmitch\csgo\utils\DisplayItem.class
+me\reklessmitch\csgo\configs\BRArena.class
 me\reklessmitch\csgo\games\other\Spleef.class
 me\reklessmitch\csgo\games\other\Parkour.class
 me\reklessmitch\csgo\games\ffa\FFAGame.class
@@ -12,6 +13,7 @@ me\reklessmitch\csgo\cmd\arena\CmdSpleefAddFloor.class
 me\reklessmitch\csgo\cmd\other\CmdSpawn.class
 me\reklessmitch\csgo\cmd\arena\CmdArenaParkourAddCheckPoint.class
 me\reklessmitch\csgo\configs\FFAArena.class
+me\reklessmitch\csgo\colls\BRArenaColl.class
 me\reklessmitch\csgo\colls\KitColl.class
 me\reklessmitch\csgo\MiniGames.class
 me\reklessmitch\csgo\utils\GameType.class
@@ -22,6 +24,7 @@ me\reklessmitch\csgo\Perm.class
 me\reklessmitch\csgo\colls\TeamArenaColl.class
 me\reklessmitch\csgo\utils\Countdown.class
 me\reklessmitch\csgo\cmd\other\CmdGetCustomData.class
+me\reklessmitch\csgo\utils\TeleportUtils.class
 me\reklessmitch\csgo\cmd\arena\CmdLeave.class
 me\reklessmitch\csgo\guis\GamesGUI.class
 me\reklessmitch\csgo\utils\Countdown$TickAction.class
@@ -41,3 +44,4 @@ me\reklessmitch\csgo\utils\NameTagHider$1.class
 me\reklessmitch\csgo\games\tg\CSGO.class
 me\reklessmitch\csgo\guis\CSGOShop.class
 me\reklessmitch\csgo\colls\FFAArenaColl.class
+me\reklessmitch\csgo\games\todo\BattleRoyale.class

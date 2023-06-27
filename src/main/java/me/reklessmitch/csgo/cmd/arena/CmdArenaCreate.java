@@ -42,6 +42,10 @@ public class CmdArenaCreate extends ArenaCommand {
                 ParkourArena arena = ParkourArenaColl.get().create(arenaName);
                 arena.setName(arenaName);
             }
+            case "br" -> {
+                BRArena arena = BRArenaColl.get().create(arenaName);
+                arena.setArenaName(arenaName);
+            }
             default -> {
                 this.msg("Invalid arena type");
                 return;

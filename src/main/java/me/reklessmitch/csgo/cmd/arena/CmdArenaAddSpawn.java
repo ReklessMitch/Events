@@ -5,10 +5,7 @@ import com.massivecraft.massivecore.command.requirement.RequirementHasPerm;
 import com.massivecraft.massivecore.command.type.primitive.TypeString;
 import me.reklessmitch.csgo.Perm;
 import me.reklessmitch.csgo.cmd.ArenaCommand;
-import me.reklessmitch.csgo.configs.FFAArena;
-import me.reklessmitch.csgo.configs.FlowerPowerArena;
-import me.reklessmitch.csgo.configs.ParkourArena;
-import me.reklessmitch.csgo.configs.SpleefArena;
+import me.reklessmitch.csgo.configs.*;
 import me.reklessmitch.csgo.utils.SerLocation;
 
 public class CmdArenaAddSpawn extends ArenaCommand {
@@ -50,6 +47,11 @@ public class CmdArenaAddSpawn extends ArenaCommand {
                 ParkourArena pArena = ParkourArena.get(arenaName);
                 pArena.setStartLocation(location);
                 pArena.changed();
+            }
+            case "br" -> {
+                BRArena brArena = BRArena.get(arenaName);
+                brArena.setMiddleLocation(location);
+                brArena.changed();
             }
             default -> msg("Invalid game type - Not yet implemented!");
         }

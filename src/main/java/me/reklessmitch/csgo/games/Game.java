@@ -17,6 +17,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -52,6 +53,12 @@ public class Game extends Engine {
         return it;
     }
 
+    public Set<Player> uuidToPlayer(Set<UUID> ids) {
+        return ids.stream()
+                .map(Bukkit::getPlayer)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+    }
     public void startGame(){}
 
     public void start() {
@@ -108,6 +115,7 @@ public class Game extends Engine {
     public void resetPlayer(UUID player){
         Player p = Bukkit.getPlayer(player);
         p.getInventory().clear();
+        p.getInventory().setArmorContents(null);
         p.setHealth(20);
         p.setFoodLevel(20);
     }

@@ -12,10 +12,14 @@ import me.reklessmitch.csgo.games.ffa.OIAC;
 import me.reklessmitch.csgo.games.other.Parkour;
 import me.reklessmitch.csgo.games.other.Spleef;
 import me.reklessmitch.csgo.games.tg.CSGO;
+import me.reklessmitch.csgo.games.todo.BattleRoyale;
 import me.reklessmitch.csgo.games.tpg.FlowerPoker;
 import me.reklessmitch.csgo.utils.NameTagHider;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.player.PlayerLoginEvent;
 
 import java.util.*;
 
@@ -30,6 +34,7 @@ public final class MiniGames extends MassivePlugin {
     Set<UUID> playersInGame = new HashSet<>();
     World eventWorld;
     World spawnWorld;
+    World brWorld;
     int gameAmount = 0;
 
     public MiniGames() {
@@ -41,6 +46,7 @@ public final class MiniGames extends MassivePlugin {
     @Override
     public void onEnableInner(){
         i = this;
+        Bukkit.getServer().getPluginManager().registerEvents(this, i);
         nameTagHider = new NameTagHider(this);
         this.activate(
             MConfColl.class,
@@ -50,6 +56,7 @@ public final class MiniGames extends MassivePlugin {
             FFAArenaColl.class,
             TeamArenaColl.class,
             ParkourArenaColl.class,
+            BRArenaColl.class,
             // Cmds
             CmdArena.class,
             CmdKit.class,
@@ -102,6 +109,12 @@ public final class MiniGames extends MassivePlugin {
                 games.add(new Parkour(arena));
             }
         });
+
+        BRArenaColl.get().getAll().forEach(arena -> {
+            if(!arena.isActive()){
+                games.add(new BattleRoyale(arena));
+            }
+        });
     }
 
     private void endAllArenas(){
@@ -122,6 +135,10 @@ public final class MiniGames extends MassivePlugin {
             arena.changed();
         });
         ParkourArenaColl.get().getAll().forEach(arena -> {
+            arena.setActive(false);
+            arena.changed();
+        });
+        BRArenaColl.get().getAll().forEach(arena -> {
             arena.setActive(false);
             arena.changed();
         });

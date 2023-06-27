@@ -9,8 +9,6 @@ i
 9src/main/java/me/reklessmitch/csgo/configs/TeamArena.java,9\9\99c73320bba00444c845169b2db5ef61542d1fea
 l
 <src/main/java/me/reklessmitch/csgo/configs/ParkourArena.java,e\e\ee61a8d89176d42643bd20986bf016b38573b375
-e
-5src/main/java/me/reklessmitch/csgo/configs/MConf.java,9\8\985ecfbd581823a6eddb85d5947895b932aff251
 t
 Dsrc/main/java/me/reklessmitch/csgo/cmd/arena/CmdArenaTGAddSpawn.java,3\a\3a9c95e0f59380157884888834995703e4c853c3
 j

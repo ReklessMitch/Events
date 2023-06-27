@@ -21,6 +21,7 @@ public class MConf extends Entity<MConf> {
 
     String eventWorld = "Events";
     String spawnWorld = "GambleVerse";
+    String brWorld = "BR";
 
     String spleefShovelName = "&aSpleef Shovel";
     String spleefSnowballName = "&bSpleef Snowball";

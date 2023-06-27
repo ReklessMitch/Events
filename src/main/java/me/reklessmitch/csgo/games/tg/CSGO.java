@@ -134,13 +134,6 @@ public class CSGO extends Game {
 
     }
 
-    private Set<Player> uuidToPlayer(Set<UUID> ids) {
-        return ids.stream()
-                .map(Bukkit::getPlayer)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
-    }
-
     private void hideNameTags(){
         PlayerDisguise ctDisguise = new PlayerDisguise("ReklessMitch");
         PlayerDisguise tDisguise = new PlayerDisguise("Jail");
