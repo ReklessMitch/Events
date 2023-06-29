@@ -1,18 +1,16 @@
 package me.reklessmitch.csgo.games.todo;
 
-import com.massivecraft.massivecore.util.MUtil;
 import dev.lone.itemsadder.api.*;
-import dev.lone.itemsadder.api.Events.CustomBlockInteractEvent;
 import me.reklessmitch.csgo.configs.Arena;
 import me.reklessmitch.csgo.games.Game;
 import me.reklessmitch.csgo.utils.DisplayItem;
 import me.reklessmitch.csgo.utils.SerLocation;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Vehicle;
-import org.bukkit.event.EventHandler;
 
 import java.util.List;
+
+import static me.reklessmitch.csgo.utils.UUIDUtil.idConvertList;
 
 public class MarioKart extends Game {
 
@@ -39,7 +37,7 @@ public class MarioKart extends Game {
 
     public void spawnCarsAndPlayers() {
         List<SerLocation> spawnPoints = arena.getSpawnPoints();
-        List<Player> players = uuidToPlayer(getPlayers()).stream().toList();
+        List<Player> players = idConvertList(getPlayers()).stream().toList();
         for (int i = 0; i < spawnPoints.size(); i++) {
             CustomStack s = CustomStack.getInstance("iavehicles:black_go_cart");
             System.out.println(s.getNamespacedID());

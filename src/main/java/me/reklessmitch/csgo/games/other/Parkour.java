@@ -20,6 +20,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
+import static me.reklessmitch.csgo.utils.UUIDUtil.idConvertList;
+
 public class Parkour extends Game {
 
     Arena arena;
@@ -111,7 +113,7 @@ public class Parkour extends Game {
         if(block.getType().equals(Material.IRON_BLOCK)){
             if(finished.contains(playerID)) return;
             finished.add(playerID);
-            getPlayers().forEach(p -> Bukkit.getPlayer(p).sendMessage(ChatColor.translateAlternateColorCodes('&',
+            idConvertList(getPlayers()).forEach(p -> p.sendMessage(ChatColor.translateAlternateColorCodes('&',
                     "&c&l" + event.getPlayer().getName() + "&a finished the parkour in position: &c&l" + finished.size())));
             if(finished.size() == maxWinners) end();
         }

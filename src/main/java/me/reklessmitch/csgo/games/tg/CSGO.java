@@ -5,6 +5,7 @@ import com.massivecraft.massivecore.util.MUtil;
 import me.libraryaddict.disguise.DisguiseAPI;
 import me.libraryaddict.disguise.disguisetypes.PlayerDisguise;
 import me.reklessmitch.csgo.MiniGames;
+import me.reklessmitch.csgo.colls.KitColl;
 import me.reklessmitch.csgo.configs.Arena;
 import me.reklessmitch.csgo.configs.MConf;
 import me.reklessmitch.csgo.games.Game;
@@ -21,9 +22,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+
+import static me.reklessmitch.csgo.utils.UUIDUtil.idConvert;
+import static me.reklessmitch.csgo.utils.UUIDUtil.idConvertList;
 
 public class CSGO extends Game {
 
@@ -55,12 +60,13 @@ public class CSGO extends Game {
         if(!isActive()) {
             super.removePlayer(player);
         }else {
-            Player p = Bukkit.getPlayer(player);
+            Player p = idConvert(player);
             if(p != null && bossBar.getPlayers().contains(p)){
                 bossBar.removePlayer(p);
             }
             tTeam.remove(player);
             ctTeam.remove(player);
+            DisguiseAPI.undisguiseToAll(idConvert(player));
             if (tTeam.isEmpty() || ctTeam.isEmpty()) {
                 end();
             } else {
@@ -113,7 +119,7 @@ public class CSGO extends Game {
                 ChatColor.BLUE + "COUNTER TERRORIST - " + ChatColor.WHITE + ctScore);
 
         resetPlayersBossBar();
-        getPlayers().forEach(player -> bossBar.addPlayer(Bukkit.getPlayer(player)));
+        idConvertList(getPlayers()).forEach(player -> bossBar.addPlayer(player));
     }
 
     @Override
@@ -134,17 +140,18 @@ public class CSGO extends Game {
     }
 
     private void hideNameTags(){
-        PlayerDisguise ctDisguise = new PlayerDisguise("ReklessMitch");
-        PlayerDisguise tDisguise = new PlayerDisguise("Jail");
-        tDisguise.setNameVisible(false);
-        ctDisguise.setNameVisible(false);
-        ctTeam.forEach(p -> DisguiseAPI.disguiseToPlayers(Bukkit.getPlayer(p), ctDisguise, uuidToPlayer(getPlayers())));
-        tTeam.forEach(p -> DisguiseAPI.disguiseToPlayers(Bukkit.getPlayer(p), tDisguise, uuidToPlayer(getPlayers())));
+        List<PlayerDisguise> ctDisguises = List.of(new PlayerDisguise("_Hunter_098"), new PlayerDisguise(""));
+        List<PlayerDisguise> tDisguises = List.of(new PlayerDisguise(""), new PlayerDisguise(""));
+        ctDisguises.forEach(disguise -> disguise.setNameVisible(false));
+        tDisguises.forEach(disguise -> disguise.setNameVisible(false));
+        ctTeam.forEach(p -> DisguiseAPI.disguiseToPlayers(Bukkit.getPlayer(p), MUtil.random(ctDisguises), idConvertList(getPlayers())));
+        tTeam.forEach(p -> DisguiseAPI.disguiseToPlayers(Bukkit.getPlayer(p), MUtil.random(tDisguises), idConvertList(getPlayers())));
     }
 
 
     @Override
     public void end() {
+        getPlayers().forEach(player -> DisguiseAPI.undisguiseToAll(idConvert(player)));
         super.end();
 
         arena.setActive(false);
@@ -174,12 +181,20 @@ public class CSGO extends Game {
         }
     }
 
+    private void newInventory(UUID player){
+        Player p = idConvert(player);
+        p.setHealth(20);
+        p.setFoodLevel(20);
+        Inventory inventory = p.getInventory();
+        if(inventory.isEmpty()){
+            KitColl.get().get("Pistol").giveAllItems(p);
+        }
+    }
     private void setPlayersCurrency(){
         getPlayers().forEach(player -> {
             CPlayer.get(player).getCurrency(MConf.get().getCurrency()).add(
                     player, 1500);
-            Bukkit.getPlayer(player).setHealth(20);
-            Bukkit.getPlayer(player).setFoodLevel(20);
+            newInventory(player);
         });
 
     }

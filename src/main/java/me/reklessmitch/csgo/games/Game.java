@@ -6,7 +6,6 @@ import it.endlessgames.voidteleport.api.VoidTeleportEvent;
 import lombok.Getter;
 import lombok.Setter;
 import me.reklessmitch.csgo.MiniGames;
-import me.reklessmitch.csgo.torny.GameEndEvent;
 import me.reklessmitch.csgo.utils.Countdown;
 import me.reklessmitch.csgo.utils.DisplayItem;
 import org.bukkit.*;
@@ -18,7 +17,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
-import java.util.stream.Collectors;
+
+import static me.reklessmitch.csgo.utils.UUIDUtil.idConvert;
 
 @Getter
 @Setter
@@ -54,18 +54,12 @@ public class Game extends Engine {
         return it;
     }
 
-    public Set<Player> uuidToPlayer(Set<UUID> ids) {
-        return ids.stream()
-                .map(Bukkit::getPlayer)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
-    }
     public void startGame(){}
 
     public void start() {
         if (getPlayers().size() >= getMinPlayers() && !isStarting()){
             setStarting(true);
-            new Countdown(30).onTick(tick -> {
+            new Countdown(15).onTick(tick -> {
                 if(tick % 5 == 0 || tick <= 5){
                     getPlayers().forEach(p -> MixinTitle.get().sendTitleMessage(p, 0, 20, 0, "&7Game starting in...", "&c&l" + tick));
                 }
@@ -101,7 +95,7 @@ public class Game extends Engine {
         MiniGames.get().getGames().remove(this);
         getPlayers().forEach(playerID -> {
             resetPlayer(playerID);
-            Bukkit.getPlayer(playerID).teleport(MiniGames.get().getSpawnWorld().getSpawnLocation());
+            idConvert(playerID).teleport(MiniGames.get().getSpawnWorld().getSpawnLocation());
         });
         players.clear();
         setActive(false);
@@ -109,7 +103,7 @@ public class Game extends Engine {
     }
 
     public void setAllPlayersToSurvival(){
-        getPlayers().forEach(player -> Bukkit.getPlayer(player).setGameMode(GameMode.SURVIVAL));
+        getPlayers().forEach(player -> idConvert(player).setGameMode(GameMode.SURVIVAL));
     }
 
 
@@ -127,7 +121,7 @@ public class Game extends Engine {
     }
 
     public void resetPlayer(UUID player){
-        Player p = Bukkit.getPlayer(player);
+        Player p = idConvert(player);
         p.getInventory().clear();
         p.getInventory().setArmorContents(null);
         p.setHealth(20);
@@ -139,7 +133,7 @@ public class Game extends Engine {
         MiniGames.get().getPlayersInGame().remove(player);
         if(Bukkit.getOfflinePlayer(player).isOnline()){
             resetPlayer(player);
-            Bukkit.getPlayer(player).teleport(MiniGames.get().getSpawnWorld().getSpawnLocation());
+            idConvert(player).teleport(MiniGames.get().getSpawnWorld().getSpawnLocation());
         }
     }
 

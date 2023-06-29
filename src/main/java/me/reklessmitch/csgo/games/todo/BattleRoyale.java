@@ -19,6 +19,8 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 import java.util.UUID;
 
+import static me.reklessmitch.csgo.utils.UUIDUtil.idConvertList;
+
 public class BattleRoyale extends Game {
 
     Arena arena;
@@ -70,7 +72,7 @@ public class BattleRoyale extends Game {
     }
 
     private void sortPlayersInventories() {
-        uuidToPlayer(getPlayers()).forEach(player -> {
+        idConvertList(getPlayers()).forEach(player -> {
             resetPlayer(player.getUniqueId());
             player.getInventory().addItem(new ItemStack(Material.COOKED_BEEF, 16), new ItemStack(Material.TORCH, 32));
         });
@@ -78,7 +80,7 @@ public class BattleRoyale extends Game {
 
     private void teleportToSpawns() {
         int radius = (startBorderSize / 2) - 20;
-        TeleportUtils.spawnPlayersInRadius(arena.getSpawnPoint().getLocation(), radius, uuidToPlayer(getPlayers()));
+        TeleportUtils.spawnPlayersInRadius(arena.getSpawnPoint().getLocation(), radius, idConvertList(getPlayers()));
         doStartCountDown();
     }
 
@@ -100,9 +102,9 @@ public class BattleRoyale extends Game {
         new Countdown(gracePeriod * 60).onTick(tick -> {
             if(!isActive()) return;
             if(tick % 60 == 0){
-                uuidToPlayer(getPlayers()).forEach(player ->
+                idConvertList(getPlayers()).forEach(player ->
                         player.sendMessage(ChatColor.RED + "GRACE PERIOD ENDS IN " + tick / 60 + " MINS"));
-            }}).onComplete(() -> uuidToPlayer(getPlayers()).forEach(player -> {
+            }}).onComplete(() -> idConvertList(getPlayers()).forEach(player -> {
                 player.sendMessage(ChatColor.RED + "GRACE PERIOD HAS ENDED");
                 gracePeriodActive = false;
             })).start(MiniGames.get());
@@ -115,7 +117,7 @@ public class BattleRoyale extends Game {
         new Countdown(reduceBorderEveryXMins * 60).onTick(tick -> {
             if(!isActive()) return;
             if(tick % 60 == 0){
-                uuidToPlayer(getPlayers()).forEach(player ->
+                idConvertList(getPlayers()).forEach(player ->
                         player.sendMessage(ChatColor.RED + "BORDER WILL SHRINK IN " + tick / 60 + " MINS"));
             }
         }).onComplete(() -> {
@@ -128,10 +130,10 @@ public class BattleRoyale extends Game {
     public void onPlayerDeath(PlayerDeathEvent event){
         if(getPlayers().contains(event.getPlayer().getUniqueId())){
             removePlayer(event.getPlayer().getUniqueId());
-            uuidToPlayer(getPlayers()).forEach(player -> player.sendMessage(
+            idConvertList(getPlayers()).forEach(player -> player.sendMessage(
                     ChatColor.GREEN + event.getPlayer().getName().toUpperCase() + " has been eliminated! " + getPlayers().size() + " players remaining"));
             if(getPlayers().size() == 1){
-                Bukkit.broadcastMessage(ChatColor.GREEN + "" + uuidToPlayer(getPlayers()).stream().findFirst().get().getName() + " has won the game!");
+                Bukkit.broadcastMessage(ChatColor.GREEN + "" + idConvertList(getPlayers()).stream().findFirst().get().getName() + " has won the game!");
                 end();
             }
         }

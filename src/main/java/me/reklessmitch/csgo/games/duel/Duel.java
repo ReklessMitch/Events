@@ -24,13 +24,14 @@ public class Duel extends Game {
     Arena arena;
     Kit kit;
 
-    public Duel(Arena arena) {
+    public Duel(Arena arena, Kit kit) {
         super();
         this.arena = arena;
+        this.kit = kit;
         arena.setActive(true);
         arena.changed();
         setDisplayItem(new DisplayItem(
-                Material.BOW,
+                Material.IRON_SWORD,
                 "&c&lDuel - " + arena.getName(),
                 List.of("&7Last Man Standing wins!"),
                 0
@@ -48,13 +49,8 @@ public class Duel extends Game {
     public void startGame(){
         Bukkit.getServer().getPluginManager().registerEvents(this, MiniGames.get());
         teleportToSpawns();
-        SelectKitGUI kitGUI = new SelectKitGUI(arena.getAllowedKits());
-        kitGUI.open(getPlayers());
-        Bukkit.getScheduler().runTaskLater(MiniGames.get(), () -> {
-            kit = kitGUI.getHighestVotedKit();
-            getPlayers().forEach(this::reset);
-            doCountdown();
-        }, 20L * 10);
+        getPlayers().forEach(this::reset);
+        doCountdown();
     }
 
 
@@ -78,13 +74,16 @@ public class Duel extends Game {
     public void end() {
         arena.setActive(false);
         arena.changed();
+
+        GameEndEvent e = new GameEndEvent(getPlayers().stream().toList().get(0), this);
+        Bukkit.getServer().getPluginManager().callEvent(e);
         super.end();
-        new GameEndEvent(getPlayers().stream().toList().get(0), this);
     }
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event){
         if(!getPlayers().contains(event.getPlayer().getUniqueId())) return;
+        getPlayers().remove(event.getPlayer().getUniqueId());
         end();
     }
 

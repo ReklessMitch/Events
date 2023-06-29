@@ -40,7 +40,7 @@
                         </goals>
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <outputFile>${basedir}/libs/MitchCSGO.jar</outputFile>
+                            <outputFile>${basedir}/libs/MitchEvents.jar</outputFile>
                         </configuration>
                     </execution>
                 </executions>

@@ -11,12 +11,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
+
+import static me.reklessmitch.csgo.utils.UUIDUtil.idConvertList;
 
 public class FlowerPoker extends Game {
 
@@ -98,11 +99,8 @@ public class FlowerPoker extends Game {
     }
 
     public void resetInventories(){
-        getPlayers().forEach(playerID -> {
-            Player p = Bukkit.getPlayer(playerID);
-            p.getInventory().clear();
-            p.getInventory().addItem(new ItemStack(seed, 5));
-        });
+        idConvertList(getPlayers()).forEach(p ->
+                p.getInventory().setContents(new ItemStack[]{new ItemStack(seed, 5)}));
     }
 
     @Override
@@ -112,7 +110,7 @@ public class FlowerPoker extends Game {
         resetInventories();
         teleportPlayers();
         Bukkit.getScheduler().runTaskLater(MiniGames.get(), () -> getPlayers().forEach(player -> MixinTitle.get().sendTitleMessage(player, 0, 20, 0,
-                ChatColor.GREEN + "NEW ROUND", ChatColor.GRAY + "Place 5 flowers!")), 30L);
+                ChatColor.GREEN + "NEW ROUND", ChatColor.GRAY + "Place 5 flowers!")), 15L);
     }
 
     private void teleportPlayers() {
@@ -175,7 +173,7 @@ public class FlowerPoker extends Game {
             startGame();
         } else {
             String winnerName = player1 > player2 ? Bukkit.getOfflinePlayer(players.get(0)).getName() : Bukkit.getOfflinePlayer(players.get(1)).getName();
-            getPlayers().forEach(player -> Bukkit.getPlayer(player).sendMessage(
+            idConvertList(getPlayers()).forEach(p -> p.sendMessage(
                     ChatColor.translateAlternateColorCodes('&',
                             "&a&l" + winnerName + " &7won with &a&l" + getHandName(Math.max(player1, player2)))));
             end();

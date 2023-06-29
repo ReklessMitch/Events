@@ -14,6 +14,8 @@ import org.bukkit.inventory.Inventory;
 
 import java.util.*;
 
+import static me.reklessmitch.csgo.utils.UUIDUtil.idConvertList;
+
 public class SelectKitGUI extends ChestGui implements Listener {
 
     @Getter private Map<String, Integer> votes = new HashMap<>();
@@ -74,6 +76,6 @@ public class SelectKitGUI extends ChestGui implements Listener {
     }
 
     public void open(Set<UUID> players) {
-        players.forEach(p -> Bukkit.getPlayer(p).openInventory(this.getInventory()));
+        idConvertList(players).forEach(p -> p.openInventory(this.getInventory()));
     }
 }

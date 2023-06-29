@@ -15,8 +15,8 @@ import me.reklessmitch.csgo.games.other.Parkour;
 import me.reklessmitch.csgo.games.other.Spleef;
 import me.reklessmitch.csgo.games.tg.CSGO;
 import me.reklessmitch.csgo.games.todo.BattleRoyale;
-import me.reklessmitch.csgo.games.todo.MarioKart;
 import me.reklessmitch.csgo.games.tpg.FlowerPoker;
+import me.reklessmitch.csgo.torny.Tournament;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
@@ -29,6 +29,7 @@ public final class MiniGames extends MassivePlugin {
     public static MiniGames get() { return i; }
 
     List<Game> games = new ArrayList<>();
+    List<Tournament> tournaments = new ArrayList<>();
     Set<UUID> playersInGame = new HashSet<>();
     World eventWorld;
     World spawnWorld;
@@ -49,12 +50,15 @@ public final class MiniGames extends MassivePlugin {
             MConfColl.class,
             KitColl.class,
             ArenaColl.class,
+
             // Cmds
             CmdArena.class,
             CmdKit.class,
             CmdSpawn.class,
             CmdCreateGames.class,
             CmdTest.class,
+            CmdCreateTorny.class,
+            CmdTornyGUI.class,
             CmdGamesGUI.class,
             CmdCSGOShop.class,
             CmdGetCustomData.class,
@@ -108,4 +112,5 @@ public final class MiniGames extends MassivePlugin {
     public int getNewGameID() {
         return gameAmount++;
     }
+
 }

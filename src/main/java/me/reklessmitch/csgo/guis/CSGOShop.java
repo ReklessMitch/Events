@@ -17,6 +17,8 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.UUID;
 
+import static me.reklessmitch.csgo.utils.UUIDUtil.idConvert;
+
 public class CSGOShop extends ChestGui implements Listener {
 
     public CSGOShop() {
@@ -59,7 +61,7 @@ public class CSGOShop extends ChestGui implements Listener {
     }
 
     public void open(UUID player){
-        Bukkit.getPlayer(player).openInventory(this.getInventory());
+        idConvert(player).openInventory(this.getInventory());
     }
 
     public void close(Player player){

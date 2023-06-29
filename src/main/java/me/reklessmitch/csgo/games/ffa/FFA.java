@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static me.reklessmitch.csgo.utils.UUIDUtil.idConvert;
+
 @Getter
 public class FFA extends Game {
 
@@ -76,7 +78,7 @@ public class FFA extends Game {
     }
 
     public void reset(UUID playerID) {
-        Player player = Bukkit.getPlayer(playerID);
+        Player player = idConvert(playerID);
         player.getInventory().clear();
         kit.giveAllItems(player);
     }

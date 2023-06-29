@@ -37,14 +37,6 @@ public class Element extends Game {
         return inventory;
     }
 
-    @Override
-    public void start() {
-        if(this.getPlayers().size() == 2) {
-            this.getPlayers().forEach(player -> Bukkit.getPlayer(player).openInventory(gui));
-
-        }
-    }
-
     @EventHandler(ignoreCancelled = true)
     private void onInventoryClick(InventoryClickEvent event) {
         if(event.getClickedInventory() != gui) return;

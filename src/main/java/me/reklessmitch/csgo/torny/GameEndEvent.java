@@ -25,4 +25,9 @@ public class GameEndEvent extends Event {
     public HandlerList getHandlers() {
         return handlers;
     }
+
+    @NotNull
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
 }
