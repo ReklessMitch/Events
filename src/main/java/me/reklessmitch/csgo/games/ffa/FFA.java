@@ -66,19 +66,6 @@ public class FFA extends Game {
         }, 20L * 10);
     }
 
-    private void doCountdown() {
-        new Countdown(10).onTick(tick -> {
-            if(tick % 5 == 0 || tick <= 5){
-                getPlayers().forEach(player -> MixinTitle.get().sendTitleMessage(
-                    player, 0, 20, 0, "&c&lGame begins in", tick + " seconds"));
-            }}).onComplete(() -> {
-                getPlayers().forEach(player -> MixinTitle.get().sendTitleMessage(
-                        player, 0, 20, 0, "&c&lGO!", "&7May the odds, be forever, in your favour."));
-                setHasStarted(true);
-            }).start(MiniGames.get());
-    }
-
-
     @EventHandler(ignoreCancelled = true)
     public void onPlayerMove(PlayerMoveEvent event) {
         UUID playerID = event.getPlayer().getUniqueId();

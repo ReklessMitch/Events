@@ -27,6 +27,7 @@ me\reklessmitch\csgo\guis\CSGOShop.class
 me\reklessmitch\csgo\colls\KitColl.class
 me\reklessmitch\csgo\games\ffa\FFA.class
 me\reklessmitch\csgo\configs\Arena.class
+me\reklessmitch\csgo\cmd\arena\CmdTest.class
 me\reklessmitch\csgo\MiniGames.class
 me\reklessmitch\csgo\games\todo\Element.class
 me\reklessmitch\csgo\guis\ElementGUI.class

@@ -6,6 +6,7 @@ import it.endlessgames.voidteleport.api.VoidTeleportEvent;
 import lombok.Getter;
 import lombok.Setter;
 import me.reklessmitch.csgo.MiniGames;
+import me.reklessmitch.csgo.torny.GameEndEvent;
 import me.reklessmitch.csgo.utils.Countdown;
 import me.reklessmitch.csgo.utils.DisplayItem;
 import org.bukkit.*;
@@ -83,6 +84,18 @@ public class Game extends Engine {
 
     }
 
+    public void doCountdown() {
+        new Countdown(10).onTick(tick -> {
+            if(tick % 5 == 0 || tick <= 5){
+                getPlayers().forEach(player -> MixinTitle.get().sendTitleMessage(
+                        player, 0, 20, 0, "&c&lGame begins in", tick + " seconds"));
+            }}).onComplete(() -> {
+            getPlayers().forEach(player -> MixinTitle.get().sendTitleMessage(
+                    player, 0, 20, 0, "&c&lGO!", "&7May the odds, be forever, in your favour."));
+            setHasStarted(true);
+        }).start(MiniGames.get());
+    }
+
     public void end(){
         MiniGames.get().getPlayersInGame().removeAll(getPlayers());
         MiniGames.get().getGames().remove(this);
@@ -98,6 +111,7 @@ public class Game extends Engine {
     public void setAllPlayersToSurvival(){
         getPlayers().forEach(player -> Bukkit.getPlayer(player).setGameMode(GameMode.SURVIVAL));
     }
+
 
     public void addPlayer(Player player, String txt){
         UUID uuid = player.getUniqueId();

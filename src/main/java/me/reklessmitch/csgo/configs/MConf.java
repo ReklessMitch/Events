@@ -8,6 +8,7 @@ import me.reklessmitch.csgo.utils.ShopItem;
 import org.bukkit.Material;
 
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @EditorName("config")
@@ -35,6 +36,7 @@ public class MConf extends Entity<MConf> {
             1000,
             List.of("mw give %player_name% AK-47")
     ));
+    //Map<Material, Integer> chestItems = Map.of(Material.DIAMOND, 1);
 
 
 }

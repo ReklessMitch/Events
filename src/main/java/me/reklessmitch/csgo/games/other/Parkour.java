@@ -117,12 +117,5 @@ public class Parkour extends Game {
         }
     }
 
-    private void doCountdown(){
-        new Countdown(15).onTick(tick ->
-                getPlayers().forEach(p -> MixinTitle.get().sendTitleMessage(p, 0, 20, 0,
-                        "&aParkour starting in: " + tick, "&7&lGet ready!")))
-        .onComplete(() -> setHasStarted(true)).start(MiniGames.get());
-    }
-
 
 }

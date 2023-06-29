@@ -4,6 +4,7 @@ import com.massivecraft.massivecore.MassivePlugin;
 import com.massivecraft.massivecore.util.MUtil;
 import lombok.Getter;
 import me.reklessmitch.csgo.cmd.arena.CmdArena;
+import me.reklessmitch.csgo.cmd.arena.CmdTest;
 import me.reklessmitch.csgo.cmd.other.*;
 import me.reklessmitch.csgo.cmd.kits.CmdKit;
 import me.reklessmitch.csgo.colls.*;
@@ -53,6 +54,7 @@ public final class MiniGames extends MassivePlugin {
             CmdKit.class,
             CmdSpawn.class,
             CmdCreateGames.class,
+            CmdTest.class,
             CmdGamesGUI.class,
             CmdCSGOShop.class,
             CmdGetCustomData.class,
@@ -82,7 +84,7 @@ public final class MiniGames extends MassivePlugin {
                 case "csgo" -> game = new CSGO(arena);
                 case "parkour" -> game = new Parkour(arena);
                 case "br" -> game = new BattleRoyale(arena);
-                case "mc" -> game = new MarioKart(arena);
+                //case "mc" -> game = new MarioKart(arena);
                 default -> game = null;
             }
             if(game == null) return;

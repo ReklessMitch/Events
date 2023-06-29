@@ -71,14 +71,15 @@ public class Spleef extends Game {
     }
 
 
-    private void doCountdown(){
+    @Override
+    public void doCountdown(){
         new Countdown(15).onTick(tick ->
-                        getPlayers().forEach(p -> MixinTitle.get().sendTitleMessage(p, 0, 20, 0,
-                                "&aSpleef starting in: " + tick, "&7&lGet ready!")))
-                .onComplete(() -> {
-                    setHasStarted(true);
-                    setupFloors(arena.getRemoveFloor(), Material.AIR);
-                }).start(MiniGames.get());
+            getPlayers().forEach(p -> MixinTitle.get().sendTitleMessage(p, 0, 20, 0,
+            "&aSpleef starting in: " + tick, "&7&lGet ready!")))
+        .onComplete(() -> {
+            setHasStarted(true);
+            setupFloors(arena.getRemoveFloor(), Material.AIR);
+        }).start(MiniGames.get());
     }
 
     @Override
