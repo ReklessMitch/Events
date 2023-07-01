@@ -22,6 +22,7 @@ import me.reklessmitch.csgo.torny.Tournament;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldType;
+import org.jetbrains.annotations.NotNull;
 
 
 import java.util.*;
@@ -32,26 +33,25 @@ public final class MiniGames extends MassivePlugin {
     private static MiniGames i;
     public static MiniGames get() { return i; }
 
-    List<Game> games = new ArrayList<>();
-    List<Tournament> tournaments = new ArrayList<>();
-    Set<UUID> playersInGame = new HashSet<>();
-    World eventWorld;
-    World spawnWorld;
-    World brWorld;
-    int gameAmount = 0;
+    private final List<Game> games = new ArrayList<>();
+    private final List<Tournament> tournaments = new ArrayList<>();
+    private final Set<UUID> playersInGame = new HashSet<>();
+    private World eventWorld;
+    private World spawnWorld;
+    private int gameAmount = 0;
 
     public MiniGames() {
         this.setVersionSynchronized(true);
         MiniGames.i = this;
     }
 
-    private void deleteWorld(String worldName){
+    private void deleteWorld(@NotNull String worldName){
         MultiverseCore core = (MultiverseCore) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-Core");
         MVWorldManager mvwm = core.getMVWorldManager();
         mvwm.deleteWorld(worldName);
     }
 
-    private void addWorld(String worldName){
+    private void addWorld(@NotNull String worldName){
         MultiverseCore core = (MultiverseCore) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-Core");
         MVWorldManager mvwm = core.getMVWorldManager();
         mvwm.addWorld(

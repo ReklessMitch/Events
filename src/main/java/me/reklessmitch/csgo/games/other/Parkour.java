@@ -24,11 +24,11 @@ import static me.reklessmitch.csgo.utils.UUIDUtil.idConvertList;
 
 public class Parkour extends Game {
 
-    Arena arena;
-    Map<UUID, List<Location>> checkpoints;
-    Location startLocation;
-    List<UUID> finished = new ArrayList<>();
-    int maxWinners = 2;
+    private final Arena arena;
+    private Map<UUID, List<Location>> checkpoints;
+    private Location startLocation;
+    private final List<UUID> finished = new ArrayList<>();
+    private final int maxWinners = 2;
 
     public Parkour(@NotNull Arena arena) {
         super();
@@ -72,7 +72,7 @@ public class Parkour extends Game {
 
     }
 
-    private void teleportToCheckpoint(Player player){
+    private void teleportToCheckpoint(@NotNull Player player){
         List<Location> playerCheckPoints = checkpoints.get(player.getUniqueId());
         if(playerCheckPoints.isEmpty()) player.teleport(startLocation);
         else player.teleport(playerCheckPoints.get(playerCheckPoints.size()-1));

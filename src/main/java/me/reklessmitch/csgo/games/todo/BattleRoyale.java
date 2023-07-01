@@ -32,17 +32,17 @@ import static me.reklessmitch.csgo.utils.UUIDUtil.idConvertList;
 
 public class BattleRoyale extends Game {
 
-    Scoreboard scoreboard;
-    Map<UUID, Integer> kills;
-    Map<Integer, UUID> finishedPosition;
-    BossBar bossBar;
-    Arena arena;
-    int startBorderSize = 250;
-    WorldBorder border;
-    int reduceBorderEveryXMins = 10;
-    int reduceBorderAmount = 50;
-    int gracePeriod = 10;
-    boolean gracePeriodActive = true;
+    private final Scoreboard scoreboard;
+    private final Map<UUID, Integer> kills;
+    private final Map<Integer, UUID> finishedPosition;
+    private final BossBar bossBar;
+    private final Arena arena;
+    private WorldBorder border;
+    private static final int START_BORDER_SIZE = 250;
+    private static final int REDUCE_BORDER_EVERY_X_MINS = 10;
+    private static final int REDUCE_BORDER_AMOUNT = 50;
+    private static final int GRACE_PERIOD = 10;
+    private boolean gracePeriodActive = true;
 
     public BattleRoyale(Arena arena){
         super();
@@ -107,7 +107,7 @@ public class BattleRoyale extends Game {
         World world = Bukkit.getWorld(MConf.get().getBrWorld());
         border = world.getWorldBorder();
         border.setCenter(arena.getSpawnPoint().getLocation());
-        border.setSize(startBorderSize * 2.0);
+        border.setSize(START_BORDER_SIZE * 2.0);
         world.setTime(1000);
         world.setDifficulty(Difficulty.PEACEFUL);
         world.setDifficulty(Difficulty.NORMAL);
@@ -117,7 +117,6 @@ public class BattleRoyale extends Game {
         List<Line> lines = scoreboard.getLines();
         int size = getPlayers().size();
         lines.get(4).setText(prefix + "&fPlayers Left: " + size);
-        lines.get(5).setText(prefix + "&fKills: ");
     }
 
     private void sortPlayersInventories() {
@@ -129,7 +128,7 @@ public class BattleRoyale extends Game {
 
     private void teleportToSpawns() {
         idConvertList(getPlayers()).forEach(player -> player.addPotionEffect(PotionEffectType.NIGHT_VISION.createEffect(999999, 10)));
-        int radius = (startBorderSize) - 20;
+        int radius = (START_BORDER_SIZE) - 20;
         TeleportUtils.spawnPlayersInRadius(arena.getSpawnPoint().getLocation(), radius, idConvertList(getPlayers()));
         doStartCountDown();
     }
@@ -150,22 +149,22 @@ public class BattleRoyale extends Game {
 
     private void resetPlayersBossBar(){
         if(!bossBar.getPlayers().isEmpty()){
-            bossBar.getPlayers().forEach(player -> bossBar.removePlayer(player));
+            bossBar.getPlayers().forEach(bossBar::removePlayer);
         }
     }
 
     private void updateBossBar(){
         resetPlayersBossBar();
-        idConvertList(getPlayers()).forEach(player -> bossBar.addPlayer(player));
+        idConvertList(getPlayers()).forEach(bossBar::addPlayer);
     }
 
     private void gracePeriodCountDown() {
         updateBossBar();
         bossBar.setTitle(ChatColor.RED + "GRACE PERIOD");
         bossBar.setVisible(true);
-        new Countdown(gracePeriod * 60).onTick(tick -> {
+        new Countdown(GRACE_PERIOD * 60).onTick(tick -> {
             if(!isActive()) return;
-            bossBar.setProgress((double) tick / (gracePeriod * 60));
+            bossBar.setProgress((double) tick / (GRACE_PERIOD * 60));
             if(tick % 60 == 0){
                 idConvertList(getPlayers()).forEach(player ->
                         player.sendMessage(ChatColor.RED + "GRACE PERIOD ENDS IN " + tick / 60 + " MINS"));
@@ -178,39 +177,38 @@ public class BattleRoyale extends Game {
 
     private void borderShrinkCountDown(){
         if(border.getSize() <= 50 || !isActive()){return;}
-        bossBar.setTitle(ChatColor.RED + "BORDER SHRINKING " + ChatColor.LIGHT_PURPLE + border.getSize() + " -> " + (border.getSize() - reduceBorderAmount));
-        new Countdown(reduceBorderEveryXMins * 60).onTick(tick -> {
+        bossBar.setTitle(ChatColor.RED + "BORDER SHRINKING " + ChatColor.LIGHT_PURPLE + border.getSize() + " -> " + (border.getSize() - REDUCE_BORDER_AMOUNT));
+        new Countdown(REDUCE_BORDER_EVERY_X_MINS * 60).onTick(tick -> {
             if(!isActive()) return;
-            bossBar.setProgress((double) tick / (reduceBorderEveryXMins * 60));
+            bossBar.setProgress((double) tick / (REDUCE_BORDER_EVERY_X_MINS * 60));
             if(tick % 60 == 0){
                 idConvertList(getPlayers()).forEach(player ->
                         player.sendMessage(ChatColor.RED + "BORDER WILL SHRINK IN " + tick / 60 + " MINS"));
             }
         }).onComplete(() -> {
-            border.setSize(border.getSize() - reduceBorderAmount, 60);
+            border.setSize(border.getSize() - REDUCE_BORDER_AMOUNT, 60);
             borderShrinkCountDown();
         }).start(MiniGames.get());
     }
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event){
-        if(getPlayers().contains(event.getPlayer().getUniqueId())){
-            removePlayer(event.getPlayer().getUniqueId());
-            finishedPosition.put(finishedPosition.size(), event.getPlayer().getUniqueId());
-            if(event.getEntity().getKiller() != null){
-                UUID killerID = event.getEntity().getKiller().getUniqueId();
-                kills.put(killerID, kills.getOrDefault(killerID, 0) + 1);
-            }
-            if(getPlayers().size() == 1){
-                UUID player = getPlayers().stream().toList().get(0);
-                finishedPosition.put(finishedPosition.size(), player);
-                end();
-            }else{
-                idConvertList(getPlayers()).forEach(player ->
-                        player.sendMessage(ChatColor.GREEN + event.getPlayer().getName().toUpperCase() + " has been eliminated! "
-                                + getPlayers().size() + " players remaining"));
-                updateTab();
-            }
+        if(!getPlayers().contains(event.getPlayer().getUniqueId())) return;
+        removePlayer(event.getPlayer().getUniqueId());
+        finishedPosition.put(finishedPosition.size(), event.getPlayer().getUniqueId());
+        if(event.getEntity().getKiller() != null){
+            UUID killerID = event.getEntity().getKiller().getUniqueId();
+            kills.put(killerID, kills.getOrDefault(killerID, 0) + 1);
+            getPlayers().forEach(p -> idConvert(p).sendMessage(ChatColor.RED + event.getEntity().getName().toUpperCase()
+                    + ChatColor.LIGHT_PURPLE + " has been eliminated by " + ChatColor.RED +
+                    event.getEntity().getKiller().getName().toUpperCase() + "\n" + ChatColor.BLUE + getPlayers().size() + " players remaining!"));
+        }
+        if(getPlayers().size() == 1){
+            UUID player = getPlayers().stream().toList().get(0);
+            finishedPosition.put(finishedPosition.size(), player);
+            end();
+        }else{
+            updateTab();
         }
     }
 

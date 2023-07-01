@@ -22,18 +22,18 @@ import static me.reklessmitch.csgo.utils.UUIDUtil.idConvert;
 @Getter
 public class Tournament implements Listener {
 
-    DisplayItem displayItem =
+    private final DisplayItem displayItem =
             new DisplayItem(Material.DIAMOND_SWORD,
                     "&cDuel Tournament",
                     List.of("&71v1 duel tournament"),
                     0);
-    int teamsAmount;
-    int teamSize = 1;
-    List<UUID> players = new ArrayList<>();
-    boolean started = false;
-    List<Game> activeGames = new ArrayList<>();
-    List<Arena> arenas;
-    Kit kit;
+    private final int teamsAmount;
+    private static final int TEAM_SIZE = 1;
+    private final List<UUID> players = new ArrayList<>();
+    private boolean started = false;
+    private final List<Game> activeGames = new ArrayList<>();
+    private final List<Arena> arenas;
+    private final Kit kit;
 
     public Tournament(List<Arena> arenas, Kit kit, int teamsAmount) {
         this.teamsAmount = teamsAmount;
@@ -47,7 +47,7 @@ public class Tournament implements Listener {
         if(started || players.contains(player) || MiniGames.get().getPlayersInGame().contains(player)) return;
         players.add(player);
         MiniGames.get().getPlayersInGame().add(player);
-        if(players.size() == teamsAmount * teamSize){
+        if(players.size() == teamsAmount * TEAM_SIZE){
             startCoolDown();
         }
     }
@@ -63,13 +63,14 @@ public class Tournament implements Listener {
         for (int i = 0; i < players.size(); i += 2) {
             Game game = new Duel(arenas.get(gamesCreated), kit); // @TODO Need to get Arenas
             gamesCreated++;
-            game.addPlayer(idConvert(players.get(i)), displayItem.getItemName());
-            game.addPlayer(idConvert(players.get(i + 1)), displayItem.getItemName());
+            game.addPlayer(idConvert(players.get(i)), displayItem.itemName());
+            game.addPlayer(idConvert(players.get(i + 1)), displayItem.itemName());
             Bukkit.broadcastMessage(idConvert(players.get(i)).getName() + " vs " + idConvert(players.get(i + 1)).getName());
             activeGames.add(game);
         }
     }
     public void start(){
+        started = true;
         shuffleAndAddToGames();
     }
 

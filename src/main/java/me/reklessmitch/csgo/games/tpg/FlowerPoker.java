@@ -14,6 +14,7 @@ import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -21,12 +22,12 @@ import static me.reklessmitch.csgo.utils.UUIDUtil.idConvertList;
 
 public class FlowerPoker extends Game {
 
-    Arena arena;
+    private final Arena arena;
     private static final Material seed = Material.WHEAT_SEEDS;
-    Map<UUID, List<Material>> playersFlowers;
+    private Map<UUID, List<Material>> playersFlowers;
 
-    List<Block> blocksToBeRemoved = new ArrayList<>();
-    List<Material> flowerPowerValues = List.of(
+    private final List<Block> blocksToBeRemoved = new ArrayList<>();
+    private static final List<Material> flowerPowerValues = List.of(
             Material.POPPY,
             Material.BLUE_ORCHID,
             Material.DANDELION,
@@ -37,7 +38,7 @@ public class FlowerPoker extends Game {
             Material.ROSE_BUSH,
             Material.CORNFLOWER);
 
-    public FlowerPoker(Arena arena) {
+    public FlowerPoker(@NotNull Arena arena) {
         this.arena = arena;
         arena.setActive(true);
         arena.changed();
@@ -48,11 +49,10 @@ public class FlowerPoker extends Game {
                 0
         ));
         setMaxPlayers(2);
-        // shouldnt be needed but is?
         Bukkit.getServer().getPluginManager().registerEvents(this, MiniGames.get());
     }
 
-    public Map<UUID, Map<Material, Integer>> countFlowers(Map<UUID, List<Material>> playersFlowers) {
+    public Map<UUID, Map<Material, Integer>> countFlowers(@NotNull Map<UUID, @NotNull List<Material>> playersFlowers) {
         Map<UUID, Map<Material, Integer>> flowerCounts = new HashMap<>();
 
         for (Map.Entry<UUID, List<Material>> entry : playersFlowers.entrySet()) {
@@ -180,7 +180,7 @@ public class FlowerPoker extends Game {
 
     }
 
-    private int getHandValue(Map<Material, Integer> frequencyMap){
+    private int getHandValue(@NotNull Map<Material, Integer> frequencyMap){
         int maxFrequency = Collections.max(frequencyMap.values());
         switch (maxFrequency) {
             case 5 -> {return 5;}

@@ -13,6 +13,8 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Map;
 import java.util.UUID;
 
+import static me.reklessmitch.csgo.utils.UUIDUtil.idConvertList;
+
 // Basically RPS
 public class Element extends Game {
 
@@ -67,7 +69,7 @@ public class Element extends Game {
         ItemStack p2Choice = choice.get(player2);
 
         if(p1Choice.equals(p2Choice)){
-            this.getPlayers().forEach(player -> Bukkit.getPlayer(player).sendMessage("You both picked the same thing, try again!"));
+            idConvertList(getPlayers()).forEach(player -> player.sendMessage("You both picked the same thing, try again!"));
             start();
         }else{
             if(p1Choice.equals(rock) && p2Choice.equals(scissors) ||

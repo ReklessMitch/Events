@@ -6,13 +6,14 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.inventory.Inventory;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ChestUtil {
 
-    public static List<Chest> getChestsInRadius(Location location, int radius) {
+    public static List<Chest> getChestsInRadius(@NotNull Location location, int radius) {
         List<Chest> chests = new ArrayList<>();
         int minX = location.getBlockX() - radius;
         int minY = location.getBlockY() - radius;
@@ -34,7 +35,7 @@ public class ChestUtil {
         return chests;
     }
 
-    public static void addItemsToChests(List<Chest> chests) {
+    public static void addItemsToChests(@NotNull List<Chest> chests) {
         // @TODO: Add items to chests -> Needs ChestItem for % chance and amount
         for (Chest chest : chests) {
             Inventory inventory = chest.getBlockInventory();

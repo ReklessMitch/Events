@@ -7,7 +7,6 @@ import me.reklessmitch.csgo.utils.DisplayItem;
 import me.reklessmitch.csgo.utils.SerLocation;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Vehicle;
 
 import java.util.List;
 

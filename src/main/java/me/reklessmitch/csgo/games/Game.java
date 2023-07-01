@@ -15,6 +15,7 @@ import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -27,16 +28,16 @@ public class Game extends Engine {
     private static final Game i = new Game();
     public static Game get() { return i; }
 
-    boolean active = false;
-    boolean isStarting = false;
-    boolean hasStarted = false;
-    int gameID;
+    private boolean active = false;
+    private boolean isStarting = false;
+    private boolean hasStarted = false;
+    private int gameID;
 
-    DisplayItem displayItem = new DisplayItem(Material.DIAMOND, "game", List.of("lore"), 0);
+    private DisplayItem displayItem = new DisplayItem(Material.DIAMOND, "game", List.of("lore"), 0);
 
-    Set<UUID> players = new HashSet<>();
-    int maxPlayers = 20;
-    int minPlayers = 2;
+    private Set<UUID> players = new HashSet<>();
+    private int maxPlayers = 20;
+    private int minPlayers = 2;
 
 
     public Game() {
@@ -108,7 +109,7 @@ public class Game extends Engine {
     }
 
 
-    public void addPlayer(Player player, String txt){
+    public void addPlayer(@NotNull Player player, @NotNull String txt){
         UUID uuid = player.getUniqueId();
         Set<UUID> playersInGame = MiniGames.get().getPlayersInGame();
         if(!playersInGame.contains(uuid)){
@@ -121,7 +122,7 @@ public class Game extends Engine {
         }
     }
 
-    public void resetPlayer(UUID player){
+    public void resetPlayer(@NotNull UUID player){
         Player p = idConvert(player);
         p.getInventory().clear();
         p.getInventory().setArmorContents(null);
@@ -129,7 +130,7 @@ public class Game extends Engine {
         p.setFoodLevel(20);
     }
 
-    public void removePlayer(UUID player) {
+    public void removePlayer(@NotNull UUID player) {
         this.getPlayers().remove(player);
         MiniGames.get().getPlayersInGame().remove(player);
         if(Bukkit.getOfflinePlayer(player).isOnline()){

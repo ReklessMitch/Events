@@ -3,12 +3,13 @@ package me.reklessmitch.csgo.utils;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
 
 public class TeleportUtils {
 
-    public static void spawnPlayersInRadius(Location center, double radius, Set<Player> players) {
+    public static void spawnPlayersInRadius(@NotNull Location center, double radius, @NotNull Set<Player> players) {
         players.forEach(player -> {
             Location randomLocation = getRandomLocationInRadius(center, radius);
             Location topBlockLocation = getTopBlockLocation(randomLocation);
@@ -16,7 +17,7 @@ public class TeleportUtils {
         });
     }
 
-    public static Location getRandomLocationInRadius(Location center, double radius) {
+    public static Location getRandomLocationInRadius(@NotNull Location center, double radius) {
         double angle = Math.random() * Math.PI * 2; // Random angle in radians
         double x = center.getX() + radius * Math.cos(angle); // X coordinate of the random location
         double z = center.getZ() + radius * Math.sin(angle); // Z coordinate of the random location
@@ -25,7 +26,7 @@ public class TeleportUtils {
         return new Location(center.getWorld(), x, y + 1, z);
     }
 
-    public static Location getTopBlockLocation(Location location) {
+    public static Location getTopBlockLocation(@NotNull Location location) {
         World world = location.getWorld();
         int x = location.getBlockX();
         int z = location.getBlockZ();

@@ -1,6 +1,5 @@
 package me.reklessmitch.csgo.games.ffa;
 
-import com.massivecraft.massivecore.mixin.MixinTitle;
 import com.massivecraft.massivecore.util.MUtil;
 import lombok.Getter;
 import me.reklessmitch.csgo.MiniGames;
@@ -8,7 +7,6 @@ import me.reklessmitch.csgo.configs.Arena;
 import me.reklessmitch.csgo.configs.Kit;
 import me.reklessmitch.csgo.games.Game;
 import me.reklessmitch.csgo.guis.SelectKitGUI;
-import me.reklessmitch.csgo.utils.Countdown;
 import me.reklessmitch.csgo.utils.DisplayItem;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -21,6 +19,7 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.List;
@@ -32,12 +31,12 @@ import static me.reklessmitch.csgo.utils.UUIDUtil.idConvert;
 @Getter
 public class FFA extends Game {
 
-    Map<UUID, Integer> kills = new HashMap<>();
-    int killsToWin = 3;
-    Arena arena;
-    Kit kit;
+    private final Map<UUID, Integer> kills = new HashMap<>();
+    private static final int KILLS_TO_WIN = 3;
+    private final Arena arena;
+    private Kit kit;
 
-    public FFA(Arena arena) {
+    public FFA(@NotNull Arena arena) {
         super();
         this.arena = arena;
         arena.setActive(true);
@@ -77,7 +76,7 @@ public class FFA extends Game {
         }
     }
 
-    public void reset(UUID playerID) {
+    public void reset(@NotNull UUID playerID) {
         Player player = idConvert(playerID);
         player.getInventory().clear();
         kit.giveAllItems(player);
@@ -102,7 +101,7 @@ public class FFA extends Game {
         Player killer = event.getEntity().getKiller();
         getKills().put(killer.getUniqueId(), getKills().get(killer.getUniqueId()) + 1);
 
-        if(getKills().get(killer.getUniqueId()) >= killsToWin){
+        if(getKills().get(killer.getUniqueId()) >= KILLS_TO_WIN){
             getPlayers().forEach(player -> Bukkit.getPlayer(player).sendTitle("Game Over", killer.getName() + " won!"));
             event.setCancelled(true);
             end();

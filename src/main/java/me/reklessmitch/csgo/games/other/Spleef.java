@@ -24,6 +24,7 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Optional;
@@ -39,7 +40,7 @@ public class Spleef extends Game {
     private final Arena arena;
     private static final int FLOOR_RADIUS = 25;
 
-    public Spleef (Arena arena){
+    public Spleef (@NotNull Arena arena){
         super();
         this.arena = arena;
         arena.setActive(true);
@@ -99,7 +100,7 @@ public class Spleef extends Game {
     }
 
     @Override
-    public void removePlayer(UUID player) {
+    public void removePlayer(@NotNull UUID player) {
         super.removePlayer(player);
         if(!isActive() && isStarting()) {
             if(getPlayers().size() < 2) {
@@ -113,7 +114,7 @@ public class Spleef extends Game {
 
 
 
-    private void setupFloors(List<SerLocation> floors, Material removeFloor) {
+    private void setupFloors(@NotNull List<SerLocation> floors, @NotNull Material removeFloor) {
         try (EditSession session = WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(arena.getSpawnPoint().getLocation().getWorld()))) {
             floors.forEach(serLocation -> {
                 session.makeCylinder(serLocation.getVector3(), BukkitAdapter.adapt(removeFloor.createBlockData()),

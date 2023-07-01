@@ -37,17 +37,16 @@ import static me.reklessmitch.csgo.utils.UUIDUtil.idConvertList;
 
 public class CSGO extends Game {
 
-    Arena arena;
-    BossBar bossBar;
-    int maxScore = 16;
-    int tScore = 0;
-    int ctScore = 0;
-    Map<UUID, Boolean> playersList = new HashMap<>();
-    Set<UUID> tTeam = new HashSet<>();
-    Set<UUID> ctTeam = new HashSet<>();
-    Scoreboard sb;
+    private final Arena arena;
+    private final BossBar bossBar;
+    private int tScore = 0;
+    private int ctScore = 0;
+    private Map<UUID, Boolean> playersList = new HashMap<>();
+    private Set<UUID> tTeam = new HashSet<>();
+    private Set<UUID> ctTeam = new HashSet<>();
+    private final Scoreboard sb;
 
-    public CSGO(Arena arena) {
+    public CSGO(@NotNull Arena arena) {
         this.arena = arena;
         this.bossBar = Bukkit.createBossBar(ChatColor.RED + "TERRORIST - " + ChatColor.WHITE + tScore + ChatColor.GREEN + " vs " + ChatColor.BLUE + "COUNTER TERRORIST - " + ChatColor.WHITE + ctScore, BarColor.RED, BarStyle.SOLID);
         setDisplayItem(new DisplayItem(
@@ -85,7 +84,7 @@ public class CSGO extends Game {
 
 
     @Override
-    public void removePlayer(UUID player){
+    public void removePlayer(@NotNull UUID player){
         if(!isActive()) {
             super.removePlayer(player);
             updateTab();
@@ -106,7 +105,7 @@ public class CSGO extends Game {
         }
     }
 
-    private boolean allTeamDead(Set<UUID> team){
+    private boolean allTeamDead(@NotNull Set<UUID> team){
         for(UUID p : team){
             if(!playersList.get(p)) return false;
         }
@@ -128,7 +127,7 @@ public class CSGO extends Game {
         if(tScore + ctScore == 15) {swapTeams();}
         updateBossBar();
         bossBar.setVisible(true);
-        if(tScore == maxScore || ctScore == maxScore) {
+        if(tScore == 16 || ctScore == 16) {
             end();
             return;
         }
@@ -154,7 +153,7 @@ public class CSGO extends Game {
 
     private void resetPlayersBossBar(){
         if(!bossBar.getPlayers().isEmpty()){
-            bossBar.getPlayers().forEach(player -> bossBar.removePlayer(player));
+            bossBar.getPlayers().forEach(bossBar::removePlayer);
         }
     }
 
@@ -163,7 +162,7 @@ public class CSGO extends Game {
                 ChatColor.BLUE + "COUNTER TERRORIST - " + ChatColor.WHITE + ctScore);
 
         resetPlayersBossBar();
-        idConvertList(getPlayers()).forEach(player -> bossBar.addPlayer(player));
+        idConvertList(getPlayers()).forEach(bossBar::addPlayer);
     }
 
     @Override
@@ -228,7 +227,7 @@ public class CSGO extends Game {
         }
     }
 
-    private void newInventory(UUID player){
+    private void newInventory(@NotNull UUID player){
         Player p = idConvert(player);
         p.setHealth(20);
         p.setFoodLevel(20);
@@ -246,7 +245,7 @@ public class CSGO extends Game {
 
     }
 
-    private void teleportPlayersToTeamSpawn(Set<UUID> team, @NotNull List<SerLocation> spawns){
+    private void teleportPlayersToTeamSpawn(@NotNull Set<UUID> team, @NotNull List<SerLocation> spawns){
         SerLocation spawn = MUtil.random(spawns);
         if(spawn == null) return;
         team.forEach(spawn::teleport);
@@ -321,7 +320,7 @@ public class CSGO extends Game {
         CPlayer.get(killer).getCurrency(MConf.get().getCurrency()).add(killer, amount);
     }
 
-    private void playerDied(Player player){
+    private void playerDied(@NotNull Player player){
         player.setGameMode(GameMode.SPECTATOR);
         player.getInventory().clear();
         updateTab();

@@ -11,6 +11,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -18,10 +19,10 @@ import static me.reklessmitch.csgo.utils.UUIDUtil.idConvertList;
 
 public class SelectKitGUI extends ChestGui implements Listener {
 
-    @Getter private Map<String, Integer> votes = new HashMap<>();
-    private Map<Integer, String> kitSlots = new HashMap<>();
+    @Getter private final Map<String, Integer> votes = new HashMap<>();
+    private final Map<Integer, String> kitSlots = new HashMap<>();
 
-    public SelectKitGUI(List<String> stringKits) {
+    public SelectKitGUI(@NotNull List<String> stringKits) {
         List<Kit> kits = new ArrayList<>();
         stringKits.forEach(s -> kits.add(KitColl.get().get(s)));
         Inventory inventory = Bukkit.createInventory(null, 9, "Vote for a kit");
@@ -52,7 +53,7 @@ public class SelectKitGUI extends ChestGui implements Listener {
         }
     }
 
-    private void addOneToVoteAndUpdateItem(String kitName) {
+    private void addOneToVoteAndUpdateItem(@NotNull String kitName) {
         int currentVotes = votes.getOrDefault(kitName, 0);
         votes.put(kitName, currentVotes + 1);
         // Update the item amount to show the new vote count
@@ -75,7 +76,7 @@ public class SelectKitGUI extends ChestGui implements Listener {
         return null;
     }
 
-    public void open(Set<UUID> players) {
+    public void open(@NotNull Set<UUID> players) {
         idConvertList(players).forEach(p -> p.openInventory(this.getInventory()));
     }
 }

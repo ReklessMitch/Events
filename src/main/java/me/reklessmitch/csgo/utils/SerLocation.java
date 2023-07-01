@@ -8,12 +8,12 @@ import java.util.UUID;
 
 public class SerLocation {
 
-    String worldName;
-    double x;
-    double y;
-    double z;
-    float yaw;
-    float pitch;
+    private final String worldName;
+    private final double x;
+    private final double y;
+    private final double z;
+    private final float yaw;
+    private final float pitch;
 
     public SerLocation(Location location) {
         this.worldName = location.getWorld().getName();

@@ -14,6 +14,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
@@ -41,14 +42,14 @@ public class CSGOShop extends ChestGui implements Listener {
                     case "ac" -> event.getWhoClicked().getInventory().setChestplate(new ItemStack(Material.DIAMOND_CHESTPLATE));
                     default -> {
                         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replace("%player_name%", event.getWhoClicked().getName()));
-                        event.getWhoClicked().sendMessage(ChatColor.GREEN + "You have purchased " + ChatColor.LIGHT_PURPLE + item.getDisplayItem().getItemName() + "!");
+                        event.getWhoClicked().sendMessage(ChatColor.GREEN + "You have purchased " + ChatColor.LIGHT_PURPLE + item.getDisplayItem().itemName() + "!");
                     }
                 }
             });
         }
     }
 
-    public boolean doCost(Player player, int cost){
+    public boolean doCost(@NotNull Player player, int cost){
         CPlayer pConfig = CPlayer.get(player.getUniqueId());
         long pMoney = pConfig.getCurrency(MConf.get().getCurrency()).getAmount();
         if(cost > pMoney) {
@@ -60,7 +61,7 @@ public class CSGOShop extends ChestGui implements Listener {
         return true;
     }
 
-    public void open(UUID player){
+    public void open(@NotNull UUID player){
         Player p = idConvert(player);
         if(p == null) return;
         p.openInventory(this.getInventory());
