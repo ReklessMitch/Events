@@ -2,6 +2,8 @@ package me.reklessmitch.csgo;
 
 import com.massivecraft.massivecore.MassivePlugin;
 import com.massivecraft.massivecore.util.MUtil;
+import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import lombok.Getter;
 import me.reklessmitch.csgo.cmd.arena.CmdArena;
 import me.reklessmitch.csgo.cmd.arena.CmdTest;
@@ -19,6 +21,8 @@ import me.reklessmitch.csgo.games.tpg.FlowerPoker;
 import me.reklessmitch.csgo.torny.Tournament;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.WorldType;
+
 
 import java.util.*;
 
@@ -41,6 +45,25 @@ public final class MiniGames extends MassivePlugin {
         MiniGames.i = this;
     }
 
+    private void deleteWorld(String worldName){
+        MultiverseCore core = (MultiverseCore) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-Core");
+        MVWorldManager mvwm = core.getMVWorldManager();
+        mvwm.deleteWorld(worldName);
+    }
+
+    private void addWorld(String worldName){
+        MultiverseCore core = (MultiverseCore) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-Core");
+        MVWorldManager mvwm = core.getMVWorldManager();
+        mvwm.addWorld(
+                worldName,
+                World.Environment.NORMAL,
+                null,
+                WorldType.NORMAL,
+                true,
+                null
+        );
+    }
+
 
     @Override
     public void onEnableInner(){
@@ -61,11 +84,11 @@ public final class MiniGames extends MassivePlugin {
             CmdTornyGUI.class,
             CmdGamesGUI.class,
             CmdCSGOShop.class,
-            CmdGetCustomData.class,
             // Arena
             Game.class
         );
-
+        deleteWorld("br");
+        addWorld("br");
         // Every 10 minutes create more games.
         eventWorld = Bukkit.getWorld(MConf.get().getEventWorld());
         spawnWorld = Bukkit.getWorld(MConf.get().getSpawnWorld());
@@ -106,6 +129,7 @@ public final class MiniGames extends MassivePlugin {
     @Override
     public void onDisable(){
         i = null;
+        deleteWorld("br");
         super.onDisable();
     }
 

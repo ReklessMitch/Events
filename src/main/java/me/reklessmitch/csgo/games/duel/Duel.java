@@ -4,7 +4,6 @@ import me.reklessmitch.csgo.MiniGames;
 import me.reklessmitch.csgo.configs.Arena;
 import me.reklessmitch.csgo.configs.Kit;
 import me.reklessmitch.csgo.games.Game;
-import me.reklessmitch.csgo.guis.SelectKitGUI;
 import me.reklessmitch.csgo.torny.GameEndEvent;
 import me.reklessmitch.csgo.utils.DisplayItem;
 import org.bukkit.Bukkit;

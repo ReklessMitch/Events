@@ -1,6 +1,7 @@
 package me.reklessmitch.csgo.games.todo;
 
 import com.massivecraft.massivecore.util.ItemBuilder;
+import me.reklessmitch.csgo.MiniGames;
 import me.reklessmitch.csgo.games.Game;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -27,6 +28,8 @@ public class Element extends Game {
         paper = new ItemBuilder(Material.PAPER, "&aPaper").build();
         scissors = new ItemBuilder(Material.COBBLESTONE, "&dScissors").build();
         gui = newGui();
+        Bukkit.getServer().getPluginManager().registerEvents(this, MiniGames.get());
+
     }
 
     private Inventory newGui() {

@@ -21,6 +21,10 @@ public class CmdArenaTGAddSpawn extends ArenaCommand {
     public void perform() throws MassiveException {
         String arenaName = this.readArg();
         int team = this.readArg();
+        if(arenaName == null || team == 0){
+            msg("Invalid Format / arena settgspawn (arenaName) (team)");
+            return;
+        }
         if(team != 1 && team != 2){
             msg("Invalid team number");
             return;

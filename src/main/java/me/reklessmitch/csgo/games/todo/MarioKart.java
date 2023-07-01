@@ -7,6 +7,7 @@ import me.reklessmitch.csgo.utils.DisplayItem;
 import me.reklessmitch.csgo.utils.SerLocation;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Vehicle;
 
 import java.util.List;
 
@@ -41,14 +42,6 @@ public class MarioKart extends Game {
         for (int i = 0; i < spawnPoints.size(); i++) {
             CustomStack s = CustomStack.getInstance("iavehicles:black_go_cart");
             System.out.println(s.getNamespacedID());
-            if(s instanceof CustomFurniture f){
-                f.getEntity().spawnAt(spawnPoints.get(i).getLocation());
-                f.getEntity().addPassenger(players.get(i));
-            }
-            //CustomFurniture test = CustomFurniture.spawnPreciseNonSolid("iavehicles:black_go_cart",
-                    //spawnPoints.get(i).getLocation());
-
-            //System.out.println(test.getDisplayName());
 
         }
     }

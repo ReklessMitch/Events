@@ -1,6 +1,10 @@
 package me.reklessmitch.csgo.games.todo;
 
 import com.massivecraft.massivecore.mixin.MixinTitle;
+import com.massivecraft.massivecore.util.MUtil;
+import me.neznamy.tab.api.TabAPI;
+import me.neznamy.tab.api.scoreboard.Line;
+import me.neznamy.tab.api.scoreboard.Scoreboard;
 import me.reklessmitch.csgo.MiniGames;
 import me.reklessmitch.csgo.configs.Arena;
 import me.reklessmitch.csgo.configs.MConf;
@@ -8,21 +12,30 @@ import me.reklessmitch.csgo.games.Game;
 import me.reklessmitch.csgo.utils.Countdown;
 import me.reklessmitch.csgo.utils.DisplayItem;
 import me.reklessmitch.csgo.utils.TeleportUtils;
+
 import org.bukkit.*;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffectType;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
+import static me.reklessmitch.csgo.utils.UUIDUtil.idConvert;
 import static me.reklessmitch.csgo.utils.UUIDUtil.idConvertList;
 
 public class BattleRoyale extends Game {
 
+    Scoreboard scoreboard;
+    Map<UUID, Integer> kills;
+    Map<Integer, UUID> finishedPosition;
+    BossBar bossBar;
     Arena arena;
     int startBorderSize = 250;
     WorldBorder border;
@@ -34,6 +47,10 @@ public class BattleRoyale extends Game {
     public BattleRoyale(Arena arena){
         super();
         this.arena = arena;
+        this.scoreboard = TabAPI.getInstance().getScoreboardManager().getRegisteredScoreboards().get("br");
+        this.bossBar = Bukkit.createBossBar(ChatColor.RED + "BATTLEDOME", BarColor.RED, BarStyle.SOLID);
+        kills = new HashMap<>();
+        finishedPosition = new HashMap<>();
         arena.setActive(true);
         arena.changed();
         setDisplayItem(new DisplayItem(
@@ -45,8 +62,32 @@ public class BattleRoyale extends Game {
         setMaxPlayers(50);
     }
 
+
+    @Override
+    public void removePlayer(UUID player){
+        Player p = idConvert(player);
+        if(p != null && bossBar.getPlayers().contains(p)){
+            bossBar.removePlayer(p);
+        }
+        super.removePlayer(player);
+    }
+    private void showWinners(){
+        StringBuilder message = new StringBuilder("&b&l -- BattleDome RESULTS -- \n");
+        message.append("\n&6&lPlacements\n");
+        for(int i = 0; i < Math.min(5, finishedPosition.size()); i++) {
+            message.append("&3&l").append(i + 1).append(". &b&l").
+                    append(Bukkit.getOfflinePlayer(finishedPosition.get(finishedPosition.size() -1 - i)).getName()).append("\n");
+        }
+        message.append("\n&6&lKill Leaders\n");
+        MUtil.entriesSortedByValues(kills).stream().limit(5).forEach(entry -> message.append("&3&l")
+                .append(Bukkit.getOfflinePlayer(entry.getKey()).getName())
+                .append(" &7with &b&l").append(entry.getValue()).append(" &7kills\n"));
+        Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', message.toString()));
+    }
+
     @Override
     public void end(){
+        showWinners();
         border.reset();
         arena.setActive(false);
         arena.changed();
@@ -59,16 +100,24 @@ public class BattleRoyale extends Game {
         setupWorld();
         sortPlayersInventories();
         teleportToSpawns();
+        updateTab();
     }
 
     private void setupWorld(){
         World world = Bukkit.getWorld(MConf.get().getBrWorld());
         border = world.getWorldBorder();
         border.setCenter(arena.getSpawnPoint().getLocation());
-        border.setSize(startBorderSize);
+        border.setSize(startBorderSize * 2.0);
         world.setTime(1000);
         world.setDifficulty(Difficulty.PEACEFUL);
         world.setDifficulty(Difficulty.NORMAL);
+    }
+    private void updateTab(){
+        String prefix = "%img_offset_-500% ";
+        List<Line> lines = scoreboard.getLines();
+        int size = getPlayers().size();
+        lines.get(4).setText(prefix + "&fPlayers Left: " + size);
+        lines.get(5).setText(prefix + "&fKills: ");
     }
 
     private void sortPlayersInventories() {
@@ -79,7 +128,8 @@ public class BattleRoyale extends Game {
     }
 
     private void teleportToSpawns() {
-        int radius = (startBorderSize / 2) - 20;
+        idConvertList(getPlayers()).forEach(player -> player.addPotionEffect(PotionEffectType.NIGHT_VISION.createEffect(999999, 10)));
+        int radius = (startBorderSize) - 20;
         TeleportUtils.spawnPlayersInRadius(arena.getSpawnPoint().getLocation(), radius, idConvertList(getPlayers()));
         doStartCountDown();
     }
@@ -94,28 +144,44 @@ public class BattleRoyale extends Game {
                     player, 0, 20, 0, "&c&lGame has begun", ""));
             setHasStarted(true);
             gracePeriodCountDown();
-            borderShrinkCountDown();
         }).start(MiniGames.get());
     }
 
+
+    private void resetPlayersBossBar(){
+        if(!bossBar.getPlayers().isEmpty()){
+            bossBar.getPlayers().forEach(player -> bossBar.removePlayer(player));
+        }
+    }
+
+    private void updateBossBar(){
+        resetPlayersBossBar();
+        idConvertList(getPlayers()).forEach(player -> bossBar.addPlayer(player));
+    }
+
     private void gracePeriodCountDown() {
+        updateBossBar();
+        bossBar.setTitle(ChatColor.RED + "GRACE PERIOD");
+        bossBar.setVisible(true);
         new Countdown(gracePeriod * 60).onTick(tick -> {
             if(!isActive()) return;
+            bossBar.setProgress((double) tick / (gracePeriod * 60));
             if(tick % 60 == 0){
                 idConvertList(getPlayers()).forEach(player ->
                         player.sendMessage(ChatColor.RED + "GRACE PERIOD ENDS IN " + tick / 60 + " MINS"));
             }}).onComplete(() -> idConvertList(getPlayers()).forEach(player -> {
                 player.sendMessage(ChatColor.RED + "GRACE PERIOD HAS ENDED");
                 gracePeriodActive = false;
+                borderShrinkCountDown();
             })).start(MiniGames.get());
     }
 
     private void borderShrinkCountDown(){
-        if(border.getSize() <= 50 || !isActive()){
-            return;
-        }
+        if(border.getSize() <= 50 || !isActive()){return;}
+        bossBar.setTitle(ChatColor.RED + "BORDER SHRINKING " + ChatColor.LIGHT_PURPLE + border.getSize() + " -> " + (border.getSize() - reduceBorderAmount));
         new Countdown(reduceBorderEveryXMins * 60).onTick(tick -> {
             if(!isActive()) return;
+            bossBar.setProgress((double) tick / (reduceBorderEveryXMins * 60));
             if(tick % 60 == 0){
                 idConvertList(getPlayers()).forEach(player ->
                         player.sendMessage(ChatColor.RED + "BORDER WILL SHRINK IN " + tick / 60 + " MINS"));
@@ -130,11 +196,20 @@ public class BattleRoyale extends Game {
     public void onPlayerDeath(PlayerDeathEvent event){
         if(getPlayers().contains(event.getPlayer().getUniqueId())){
             removePlayer(event.getPlayer().getUniqueId());
-            idConvertList(getPlayers()).forEach(player -> player.sendMessage(
-                    ChatColor.GREEN + event.getPlayer().getName().toUpperCase() + " has been eliminated! " + getPlayers().size() + " players remaining"));
+            finishedPosition.put(finishedPosition.size(), event.getPlayer().getUniqueId());
+            if(event.getEntity().getKiller() != null){
+                UUID killerID = event.getEntity().getKiller().getUniqueId();
+                kills.put(killerID, kills.getOrDefault(killerID, 0) + 1);
+            }
             if(getPlayers().size() == 1){
-                Bukkit.broadcastMessage(ChatColor.GREEN + "" + idConvertList(getPlayers()).stream().findFirst().get().getName() + " has won the game!");
+                UUID player = getPlayers().stream().toList().get(0);
+                finishedPosition.put(finishedPosition.size(), player);
                 end();
+            }else{
+                idConvertList(getPlayers()).forEach(player ->
+                        player.sendMessage(ChatColor.GREEN + event.getPlayer().getName().toUpperCase() + " has been eliminated! "
+                                + getPlayers().size() + " players remaining"));
+                updateTab();
             }
         }
     }

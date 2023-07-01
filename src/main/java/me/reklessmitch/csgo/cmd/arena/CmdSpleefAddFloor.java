@@ -22,6 +22,10 @@ public class CmdSpleefAddFloor extends ArenaCommand {
     public void perform() throws MassiveException {
         Arena arena = ArenaColl.get().get(this.readArg());
         String type = this.readArg();
+        if(arena == null || type == null){
+            msg("Invalid format /arena addfloor (arenaName) (add/remove)");
+            return;
+        }
         switch(type){
             case "add" -> arena.addFloor(me.getLocation());
             case "remove" -> arena.addRemoveFloor(me.getLocation());

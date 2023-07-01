@@ -61,7 +61,9 @@ public class CSGOShop extends ChestGui implements Listener {
     }
 
     public void open(UUID player){
-        idConvert(player).openInventory(this.getInventory());
+        Player p = idConvert(player);
+        if(p == null) return;
+        p.openInventory(this.getInventory());
     }
 
     public void close(Player player){

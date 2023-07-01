@@ -65,7 +65,7 @@ public class Spleef extends Game {
         super.end();
         Optional<UUID> player = this.getPlayers().stream().findAny();
         player.ifPresent(value -> Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&',
-                "&b&l" + Bukkit.getPlayer(value).getName() + " &fwon the game!")));
+                "&b&l" + Bukkit.getOfflinePlayer(value).getName() + " &fwon the game!")));
         arena.setActive(false);
         this.setStarting(false);
     }

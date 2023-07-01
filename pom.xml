@@ -67,6 +67,22 @@
             <id>jitpack-repo</id>
             <url>https://jitpack.io</url>
         </repository>
+        <repository>
+            <id>dmulloy2-repo</id>
+            <url>https://repo.dmulloy2.net/repository/public/</url>
+        </repository>
+        <repository>
+            <id>placeholderapi</id>
+            <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
+        </repository>
+        <repository>
+            <id>krypton</id>
+            <url>https://repo.kryptonmc.org/releases</url>
+        </repository>
+        <repository>
+            <id>OnARandomBox</id>
+            <url>https://repo.onarandombox.com/content/groups/public/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -78,11 +94,29 @@
             <systemPath>${basedir}/libs/MassiveCore-MC-1.19-SNAPSHOT.jar</systemPath>
         </dependency>
         <dependency>
+            <groupId>com.onarandombox.multiversecore</groupId>
+            <artifactId>Multiverse-Core</artifactId>
+            <version>4.3.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>me.reklessmitch</groupId>
             <artifactId>mitchcurrency</artifactId>
             <version>LATEST</version>
             <scope>system</scope>
             <systemPath>${basedir}/libs/MitchCurrencies.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>me.neznamy</groupId>
+            <artifactId>tab-api</artifactId>
+            <version>4.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>me.clip</groupId>
+            <artifactId>placeholderapi</artifactId>
+            <version>2.11.3</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>me.reklessmitch</groupId>
@@ -93,36 +127,28 @@
         </dependency>
         <dependency>
             <groupId>me.reklessmitch</groupId>
+            <artifactId>LibsDiguises</artifactId>
+            <version>LATEST</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/libs/LibsDisguises-10.0.37-Free.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>me.reklessmitch</groupId>
             <artifactId>worldedit</artifactId>
             <version>LATEST</version>
             <scope>system</scope>
             <systemPath>${basedir}/libs/FastAsyncWorldEdit-Bukkit-2.6.0-SNAPSHOT-396.jar</systemPath>
         </dependency>
         <dependency>
-            <groupId>me.reklessmitch</groupId>
+            <groupId>com.comphenix.protocol</groupId>
             <artifactId>ProtocolLib</artifactId>
-            <version>LATEST</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/libs/ProtocolLib.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>me.reklessmitch</groupId>
-            <artifactId>ItemsAdder</artifactId>
-            <version>LATEST</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/libs/ItemsAdder_3.5.0c.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>me.reklessmitch</groupId>
-            <artifactId>LibsDisguses</artifactId>
-            <version>LATEST</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/libs/LibsDisguises-10.0.37-Free.jar</systemPath>
+            <version>5.0.0</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.github.LoneDev6</groupId>
             <artifactId>api-itemsadder</artifactId>
-            <version>3.4.1-r4</version>
+            <version>3.5.0b</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

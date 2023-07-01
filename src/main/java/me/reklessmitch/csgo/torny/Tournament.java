@@ -1,7 +1,6 @@
 package me.reklessmitch.csgo.torny;
 
 
-import com.massivecraft.massivecore.Engine;
 import com.massivecraft.massivecore.mixin.MixinTitle;
 import lombok.Getter;
 import me.reklessmitch.csgo.MiniGames;
@@ -23,7 +22,11 @@ import static me.reklessmitch.csgo.utils.UUIDUtil.idConvert;
 @Getter
 public class Tournament implements Listener {
 
-    DisplayItem displayItem = new DisplayItem(Material.DIAMOND, "Tournament", List.of("lore"), 0);
+    DisplayItem displayItem =
+            new DisplayItem(Material.DIAMOND_SWORD,
+                    "&cDuel Tournament",
+                    List.of("&71v1 duel tournament"),
+                    0);
     int teamsAmount;
     int teamSize = 1;
     List<UUID> players = new ArrayList<>();
@@ -37,6 +40,7 @@ public class Tournament implements Listener {
         this.arenas = arenas;
         this.kit = kit;
         Bukkit.getServer().getPluginManager().registerEvents(this, MiniGames.get());
+
     }
 
     public void addPlayer(UUID player){

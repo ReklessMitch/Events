@@ -3,7 +3,7 @@ version: '${project.version}'
 main: me.reklessmitch.csgo.MiniGames
 api-version: 1.19
 authors: [ ReklessMitch ]
-depend: [PlaceholderAPI, MassiveCore]
+depend: [PlaceholderAPI, MassiveCore, Multiverse-Core]
 description: CSGO with IA
 permissions:
   csgo.admin: {description: admin, default: false}

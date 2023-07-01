@@ -59,7 +59,7 @@ public class Game extends Engine {
     public void start() {
         if (getPlayers().size() >= getMinPlayers() && !isStarting()){
             setStarting(true);
-            new Countdown(15).onTick(tick -> {
+            new Countdown(10).onTick(tick -> {
                 if(tick % 5 == 0 || tick <= 5){
                     getPlayers().forEach(p -> MixinTitle.get().sendTitleMessage(p, 0, 20, 0, "&7Game starting in...", "&c&l" + tick));
                 }
@@ -98,6 +98,7 @@ public class Game extends Engine {
             idConvert(playerID).teleport(MiniGames.get().getSpawnWorld().getSpawnLocation());
         });
         players.clear();
+        setHasStarted(false);
         setActive(false);
         MiniGames.get().createGames();
     }

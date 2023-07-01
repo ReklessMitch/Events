@@ -4,6 +4,9 @@ import com.massivecraft.massivecore.mixin.MixinTitle;
 import com.massivecraft.massivecore.util.MUtil;
 import me.libraryaddict.disguise.DisguiseAPI;
 import me.libraryaddict.disguise.disguisetypes.PlayerDisguise;
+import me.neznamy.tab.api.TabAPI;
+import me.neznamy.tab.api.scoreboard.Line;
+import me.neznamy.tab.api.scoreboard.Scoreboard;
 import me.reklessmitch.csgo.MiniGames;
 import me.reklessmitch.csgo.colls.KitColl;
 import me.reklessmitch.csgo.configs.Arena;
@@ -20,10 +23,12 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
+
 
 import java.util.*;
 
@@ -40,6 +45,7 @@ public class CSGO extends Game {
     Map<UUID, Boolean> playersList = new HashMap<>();
     Set<UUID> tTeam = new HashSet<>();
     Set<UUID> ctTeam = new HashSet<>();
+    Scoreboard sb;
 
     public CSGO(Arena arena) {
         this.arena = arena;
@@ -53,12 +59,36 @@ public class CSGO extends Game {
         setMaxPlayers(10);
         arena.setActive(true);
         arena.changed();
+        String name = arena.getName();
+        this.sb = TabAPI.getInstance().getScoreboardManager().getRegisteredScoreboards().
+                get(name.toLowerCase());
     }
+
+
+    private void updateTab(){
+        List<Line> lines = sb.getLines();
+        int start = 4;
+        lines.get(3).setText("%img_offset_-500%" + ChatColor.RED + "Terrorist");
+        for(UUID player: ctTeam){
+            ChatColor colour = playersList.get(player) ? ChatColor.GREEN : ChatColor.GRAY;
+            lines.get(start).setText("%img_offset_-500% " + colour + Bukkit.getOfflinePlayer(player).getName());
+            start++;
+        }
+        lines.get(start).setText("%img_offset_-500%" + ChatColor.RED + "Counter-Terrorist");
+        start++;
+        for(UUID player: tTeam){
+            ChatColor colour = playersList.get(player) ? ChatColor.GREEN : ChatColor.GRAY;
+            lines.get(start).setText("%img_offset_-500% " + colour + Bukkit.getOfflinePlayer(player).getName());
+            start++;
+        }
+    }
+
 
     @Override
     public void removePlayer(UUID player){
         if(!isActive()) {
             super.removePlayer(player);
+            updateTab();
         }else {
             Player p = idConvert(player);
             if(p != null && bossBar.getPlayers().contains(p)){
@@ -71,6 +101,7 @@ public class CSGO extends Game {
                 end();
             } else {
                 super.removePlayer(player);
+                updateTab();
             }
         }
     }
@@ -82,7 +113,19 @@ public class CSGO extends Game {
         return true;
     }
 
+    private void swapTeams(){
+        Set<UUID> temp = tTeam;
+        tTeam = ctTeam;
+        ctTeam = temp;
+        int tempS = tScore;
+        tScore = ctScore;
+        ctScore = tempS;
+        resetPlayersCurrency();
+
+    }
+
     private void newRound() {
+        if(tScore + ctScore == 15) {swapTeams();}
         updateBossBar();
         bossBar.setVisible(true);
         if(tScore == maxScore || ctScore == maxScore) {
@@ -92,6 +135,7 @@ public class CSGO extends Game {
         setHasStarted(false);
         Bukkit.getScheduler().runTaskLater(MiniGames.get(), () -> {
             playersList.replaceAll((player, status) -> false);
+            updateTab();
             teleportPlayersToTeamSpawn(tTeam, arena.getTeam1Spawns());
             teleportPlayersToTeamSpawn(ctTeam, arena.getTeam2Spawns());
             setPlayersCurrency();
@@ -126,11 +170,15 @@ public class CSGO extends Game {
     public void startGame(){
         super.start();
         Bukkit.getServer().getPluginManager().registerEvents(this, MiniGames.get());
-        getPlayers().forEach(player -> playersList.put(player, false));
+        getPlayers().forEach(player -> {
+            resetPlayer(player);
+            playersList.put(player, false);
+        });
 
         putPlayersOnTeam();
         hideNameTags();
         resetPlayersCurrency();
+
         newRound();
     }
 
@@ -140,8 +188,8 @@ public class CSGO extends Game {
     }
 
     private void hideNameTags(){
-        List<PlayerDisguise> ctDisguises = List.of(new PlayerDisguise("_Hunter_098"), new PlayerDisguise(""));
-        List<PlayerDisguise> tDisguises = List.of(new PlayerDisguise(""), new PlayerDisguise(""));
+        List<PlayerDisguise> ctDisguises = List.of(new PlayerDisguise("BoltBag"), new PlayerDisguise("_Hunter_098"),  new PlayerDisguise("greenmachinejr"));
+        List<PlayerDisguise> tDisguises = List.of(new PlayerDisguise("GuardrailHitter"), new PlayerDisguise("Technalite"), new PlayerDisguise("awildmikkel"));
         ctDisguises.forEach(disguise -> disguise.setNameVisible(false));
         tDisguises.forEach(disguise -> disguise.setNameVisible(false));
         ctTeam.forEach(p -> DisguiseAPI.disguiseToPlayers(Bukkit.getPlayer(p), MUtil.random(ctDisguises), idConvertList(getPlayers())));
@@ -152,8 +200,6 @@ public class CSGO extends Game {
     @Override
     public void end() {
         getPlayers().forEach(player -> DisguiseAPI.undisguiseToAll(idConvert(player)));
-        super.end();
-
         arena.setActive(false);
         arena.changed();
         playersList = new HashMap<>();
@@ -162,6 +208,7 @@ public class CSGO extends Game {
         Bukkit.getScheduler().runTaskLater(MiniGames.get(), () ->
                 getPlayers().forEach(player -> MixinTitle.get().sendTitleMessage(player, 0, 30, 0,
                 message, "T:" + tScore + " - CT:" + ctScore)), 20L);
+        super.end();
     }
 
     public void startRound(){
@@ -176,7 +223,7 @@ public class CSGO extends Game {
     }
 
     private void openShop(){
-        for(UUID player : playersList.keySet()) {
+        for(UUID player : getPlayers()) {
             new CSGOShop().open(player);
         }
     }
@@ -217,25 +264,47 @@ public class CSGO extends Game {
         }
     }
 
+    private void checkTeamKill(UUID player, UUID killer){
+        if(ctTeam.contains(player) && ctTeam.contains(killer) ||
+            (tTeam.contains(player) && tTeam.contains(killer))){
+
+            addCurrencyForKill(killer, -300);
+        }else{
+            addCurrencyForKill(killer, 300);
+        }
+    }
     @EventHandler(ignoreCancelled = true)
     public void deathEvent(PlayerDeathEvent event){
         UUID player = event.getEntity().getUniqueId();
-        if(!playersList.containsKey(player)) return;
-        addCurrencyForKill(event.getEntity().getKiller());
+        if(!getPlayers().contains(player)) return;
+        if(event.getEntity().getKiller() != null) {
+            checkTeamKill(event.getPlayer().getUniqueId(), event.getEntity().getKiller().getUniqueId());
+        }
         playersList.put(player, true);
         event.setCancelled(true);
         playerDied(event.getEntity());
         if(allTeamDead(tTeam)){
             ctScore++;
-            playersList.keySet().forEach(p -> MixinTitle.get().sendTitleMessage(p, 0, 30, 0,
+            getPlayers().forEach(p -> MixinTitle.get().sendTitleMessage(p, 0, 30, 0,
                     "CT wins", "T:" + tScore + " - CT:" + ctScore));
             newRound();
         }
         if(allTeamDead(ctTeam)){
             tScore++;
-            playersList.keySet().forEach(p -> MixinTitle.get().sendTitleMessage(p, 0, 30, 0,
+            getPlayers().forEach(p -> MixinTitle.get().sendTitleMessage(p, 0, 30, 0,
                     "T wins", "T:" + tScore + " - CT:" + ctScore));
             newRound();
+        }
+    }
+
+    @EventHandler
+    public void onPlayerDamageEvent(EntityDamageByEntityEvent event){
+        if(event.getEntity() instanceof Player player){
+            if(!getPlayers().contains(player.getUniqueId()) || isHasStarted()) return;
+            if(event.getDamager() instanceof Player damager){
+                event.setCancelled(true);
+                damager.sendMessage(ChatColor.RED + "You can't damage players before the round starts");
+            }
         }
     }
 
@@ -248,12 +317,13 @@ public class CSGO extends Game {
         }
     }
 
-    private void addCurrencyForKill(Player killer){
-        CPlayer.get(killer).getCurrency(MConf.get().getCurrency()).add(killer.getUniqueId(), 300);
+    private void addCurrencyForKill(UUID killer, int amount){
+        CPlayer.get(killer).getCurrency(MConf.get().getCurrency()).add(killer, amount);
     }
 
     private void playerDied(Player player){
         player.setGameMode(GameMode.SPECTATOR);
         player.getInventory().clear();
+        updateTab();
     }
 }

@@ -4,7 +4,6 @@ import com.massivecraft.massivecore.MassiveException;
 import com.massivecraft.massivecore.command.requirement.RequirementHasPerm;
 import com.massivecraft.massivecore.command.type.primitive.TypeInteger;
 import com.massivecraft.massivecore.command.type.primitive.TypeString;
-import com.massivecraft.massivecore.util.MUtil;
 import me.reklessmitch.csgo.MiniGames;
 import me.reklessmitch.csgo.Perm;
 import me.reklessmitch.csgo.cmd.ArenaCommand;
@@ -12,7 +11,6 @@ import me.reklessmitch.csgo.colls.ArenaColl;
 import me.reklessmitch.csgo.colls.KitColl;
 import me.reklessmitch.csgo.configs.Arena;
 import me.reklessmitch.csgo.configs.Kit;
-import me.reklessmitch.csgo.games.Game;
 import me.reklessmitch.csgo.torny.Tournament;
 import org.bukkit.Bukkit;
 
@@ -46,12 +44,11 @@ public class CmdCreateTorny extends ArenaCommand {
                 arenas.add(arena);
             }
         });
-        Bukkit.broadcastMessage(arenas.size() + " arenas found");
         if(arenas.size() >= teamsAmount / 2){
             Kit kit = KitColl.get().get(type);
             Tournament tournament = new Tournament(arenas, kit, teamsAmount);
             MiniGames.get().getTournaments().add(tournament);
-            Bukkit.broadcastMessage("Tournament created");
+            me.sendMessage("Tournament created");
         }
     }
 }

@@ -81,16 +81,15 @@ public class FlowerPoker extends Game {
     public void resetFlowers() {
         this.playersFlowers = new HashMap<>();
         this.getPlayers().forEach(player -> this.playersFlowers.put(player, new ArrayList<>()));
-        // @todo add other player
     }
 
     @Override
     public void end() {
-        super.end();
         arena.setActive(false);
         arena.changed();
         resetFlowers();
         resetLocations();
+        super.end();
     }
 
 
