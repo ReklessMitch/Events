@@ -1,5 +1,6 @@
 package me.reklessmitch.csgo.utils;
 
+import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;
@@ -8,8 +9,21 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
 
+@Getter
+public class DisplayItem {
+    // These Cannot be final because MCORE needs to be able to serialize them
+    private Material material;
+    private String itemName;
+    private List<String> itemLore;
+    int customModelData;
 
-public record DisplayItem(Material material, String itemName, List<String> itemLore, int customModelData) {
+    public DisplayItem(Material material, String itemName, List<String> itemLore, int customModelData) {
+        this.material = material;
+        this.itemName = itemName;
+        this.itemLore = itemLore;
+        this.customModelData = customModelData;
+    }
+
 
     public ItemStack getGuiItem() {
         ItemStack i = new ItemStack(material);

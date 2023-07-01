@@ -52,7 +52,7 @@ public class GamesGUI extends ChestGui implements Listener {
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cGame is full"));
                 return;
         }
-        game.addPlayer(player, game.getDisplayItem().itemName());
+        game.addPlayer(player, game.getDisplayItem().getItemName());
         player.closeInventory();
     }
 

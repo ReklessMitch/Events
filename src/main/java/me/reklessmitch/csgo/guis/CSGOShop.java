@@ -42,7 +42,7 @@ public class CSGOShop extends ChestGui implements Listener {
                     case "ac" -> event.getWhoClicked().getInventory().setChestplate(new ItemStack(Material.DIAMOND_CHESTPLATE));
                     default -> {
                         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replace("%player_name%", event.getWhoClicked().getName()));
-                        event.getWhoClicked().sendMessage(ChatColor.GREEN + "You have purchased " + ChatColor.LIGHT_PURPLE + item.getDisplayItem().itemName() + "!");
+                        event.getWhoClicked().sendMessage(ChatColor.GREEN + "You have purchased " + ChatColor.LIGHT_PURPLE + item.getDisplayItem().getItemName() + "!");
                     }
                 }
             });

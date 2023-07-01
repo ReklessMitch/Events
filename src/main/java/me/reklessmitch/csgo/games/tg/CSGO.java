@@ -50,10 +50,10 @@ public class CSGO extends Game {
         this.arena = arena;
         this.bossBar = Bukkit.createBossBar(ChatColor.RED + "TERRORIST - " + ChatColor.WHITE + tScore + ChatColor.GREEN + " vs " + ChatColor.BLUE + "COUNTER TERRORIST - " + ChatColor.WHITE + ctScore, BarColor.RED, BarStyle.SOLID);
         setDisplayItem(new DisplayItem(
-                Material.GOLDEN_SWORD,
+                Material.FEATHER,
                 "&c&lCSGO - " + arena.getName(),
                 List.of("&716 Round Gun Game"),
-                10000
+                121
         ));
         setMaxPlayers(10);
         arena.setActive(true);
@@ -66,17 +66,20 @@ public class CSGO extends Game {
 
     private void updateTab(){
         List<Line> lines = sb.getLines();
+        for(int i = 1; i < lines.size(); i++){
+            lines.get(i).setText("%img_offset_-500%");
+        }
         int start = 4;
         lines.get(3).setText("%img_offset_-500%" + ChatColor.RED + "Terrorist");
         for(UUID player: ctTeam){
-            ChatColor colour = playersList.get(player) ? ChatColor.GREEN : ChatColor.GRAY;
+            ChatColor colour = !playersList.get(player) ? ChatColor.GREEN : ChatColor.GRAY;
             lines.get(start).setText("%img_offset_-500% " + colour + Bukkit.getOfflinePlayer(player).getName());
             start++;
         }
         lines.get(start).setText("%img_offset_-500%" + ChatColor.RED + "Counter-Terrorist");
         start++;
         for(UUID player: tTeam){
-            ChatColor colour = playersList.get(player) ? ChatColor.GREEN : ChatColor.GRAY;
+            ChatColor colour = !playersList.get(player) ? ChatColor.GREEN : ChatColor.GRAY;
             lines.get(start).setText("%img_offset_-500% " + colour + Bukkit.getOfflinePlayer(player).getName());
             start++;
         }
@@ -238,8 +241,7 @@ public class CSGO extends Game {
     }
     private void setPlayersCurrency(){
         getPlayers().forEach(player -> {
-            CPlayer.get(player).getCurrency(MConf.get().getCurrency()).add(
-                    player, 1500);
+            CPlayer.get(player).getCurrency(MConf.get().getCurrency()).add(player, 1500);
             newInventory(player);
         });
 

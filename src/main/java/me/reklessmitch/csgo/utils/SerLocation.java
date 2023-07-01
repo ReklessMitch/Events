@@ -8,12 +8,14 @@ import java.util.UUID;
 
 public class SerLocation {
 
-    private final String worldName;
-    private final double x;
-    private final double y;
-    private final double z;
-    private final float yaw;
-    private final float pitch;
+    // These Cannot be final because MCORE needs to be able to serialize them
+
+    private String worldName;
+    private double x;
+    private double y;
+    private double z;
+    private float yaw;
+    private float pitch;
 
     public SerLocation(Location location) {
         this.worldName = location.getWorld().getName();
