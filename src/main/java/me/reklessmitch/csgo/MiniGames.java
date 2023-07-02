@@ -19,9 +19,12 @@ import me.reklessmitch.csgo.games.tg.CSGO;
 import me.reklessmitch.csgo.games.todo.BattleRoyale;
 import me.reklessmitch.csgo.games.tpg.FlowerPoker;
 import me.reklessmitch.csgo.torny.Tournament;
+import me.reklessmitch.csgo.utils.BDGen;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
+import org.bukkit.generator.ChunkGenerator;
 import org.jetbrains.annotations.NotNull;
 
 
@@ -45,23 +48,19 @@ public final class MiniGames extends MassivePlugin {
         MiniGames.i = this;
     }
 
-    private void deleteWorld(@NotNull String worldName){
+    private void deleteBRWorld(){
         MultiverseCore core = (MultiverseCore) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-Core");
         MVWorldManager mvwm = core.getMVWorldManager();
-        mvwm.deleteWorld(worldName);
+        mvwm.deleteWorld("br");
     }
 
-    private void addWorld(@NotNull String worldName){
-        MultiverseCore core = (MultiverseCore) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-Core");
-        MVWorldManager mvwm = core.getMVWorldManager();
-        mvwm.addWorld(
-                worldName,
-                World.Environment.NORMAL,
-                null,
-                WorldType.NORMAL,
-                true,
-                null
-        );
+    private void createBRWorld(){
+        WorldCreator worldCreator = new WorldCreator("br");
+        worldCreator.generator(new BDGen());
+        worldCreator.generateStructures(false);
+        worldCreator.type(WorldType.NORMAL);
+        worldCreator.createWorld();
+        worldCreator.generator(new BDGen().toString());
     }
 
 
@@ -87,8 +86,8 @@ public final class MiniGames extends MassivePlugin {
             // Arena
             Game.class
         );
-        deleteWorld("br");
-        addWorld("br");
+        deleteBRWorld();
+        createBRWorld();
         // Every 10 minutes create more games.
         eventWorld = Bukkit.getWorld(MConf.get().getEventWorld());
         spawnWorld = Bukkit.getWorld(MConf.get().getSpawnWorld());
@@ -127,9 +126,14 @@ public final class MiniGames extends MassivePlugin {
     }
 
     @Override
+    public ChunkGenerator getDefaultWorldGenerator(@NotNull String worldName, String id) {
+        return new BDGen();
+    }
+
+    @Override
     public void onDisable(){
         i = null;
-        deleteWorld("br");
+        deleteBRWorld();
         super.onDisable();
     }
 
