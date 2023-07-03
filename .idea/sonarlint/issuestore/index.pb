@@ -9,8 +9,6 @@ e
 5src/main/java/me/reklessmitch/csgo/guis/GamesGUI.java,3\b\3bab6439d3baabe57db31271a8fe9c4ceca7add6
 i
 9src/main/java/me/reklessmitch/csgo/utils/SerLocation.java,6\b\6bb5c673ecc8ee29cebcb8af268de786a68b3df2
-e
-5src/main/java/me/reklessmitch/csgo/configs/MConf.java,9\8\985ecfbd581823a6eddb85d5947895b932aff251
 :
 
 .gitignore,a\5\a5cc2925ca8258af241be7e5b0381edf30266302

@@ -2,7 +2,6 @@ package me.reklessmitch.csgo.games.tg;
 
 import com.massivecraft.massivecore.mixin.MixinTitle;
 import com.massivecraft.massivecore.util.MUtil;
-import dev.lone.itemsadder.api.Events.FurnitureInteractEvent;
 import me.libraryaddict.disguise.DisguiseAPI;
 import me.libraryaddict.disguise.disguisetypes.PlayerDisguise;
 import me.neznamy.tab.api.TabAPI;

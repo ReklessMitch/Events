@@ -36,6 +36,7 @@ me\reklessmitch\csgo\utils\Countdown$TickAction.class
 me\reklessmitch\csgo\colls\MConfColl.class
 me\reklessmitch\csgo\games\Game.class
 me\reklessmitch\csgo\colls\ArenaColl.class
+me\reklessmitch\csgo\games\tg\CSGO$4.class
 me\reklessmitch\csgo\cmd\arena\CmdArena.class
 me\reklessmitch\csgo\cmd\arena\CmdArenaTGAddSpawn.class
 me\reklessmitch\csgo\configs\MConf.class
