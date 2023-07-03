@@ -63,6 +63,7 @@ public class Tournament implements Listener {
         for (int i = 0; i < players.size(); i += 2) {
             Game game = new Duel(arenas.get(gamesCreated), kit); // @TODO Need to get Arenas
             gamesCreated++;
+            // TODO: 03/07/2023 Null checks
             game.addPlayer(idConvert(players.get(i)), displayItem.getItemName());
             game.addPlayer(idConvert(players.get(i + 1)), displayItem.getItemName());
             Bukkit.broadcastMessage(idConvert(players.get(i)).getName() + " vs " + idConvert(players.get(i + 1)).getName());

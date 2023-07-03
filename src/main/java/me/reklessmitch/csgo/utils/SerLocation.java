@@ -6,6 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import java.util.UUID;
 
+// TODO: 03/07/2023 Remove this
 public class SerLocation {
 
     // These Cannot be final because MCORE needs to be able to serialize them

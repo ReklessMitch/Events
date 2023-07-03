@@ -86,6 +86,7 @@
     </repositories>
 
     <dependencies>
+        <!--    LIBRARIES    -->
         <dependency>
             <groupId>com.massivecraft</groupId>
             <artifactId>massivecore</artifactId>
@@ -93,31 +94,7 @@
             <scope>system</scope>
             <systemPath>${basedir}/libs/MassiveCore-MC-1.19-SNAPSHOT.jar</systemPath>
         </dependency>
-        <dependency>
-            <groupId>com.onarandombox.multiversecore</groupId>
-            <artifactId>Multiverse-Core</artifactId>
-            <version>4.3.1</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>me.reklessmitch</groupId>
-            <artifactId>mitchcurrency</artifactId>
-            <version>LATEST</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/libs/MitchCurrencies.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>me.neznamy</groupId>
-            <artifactId>tab-api</artifactId>
-            <version>4.0.0</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>me.clip</groupId>
-            <artifactId>placeholderapi</artifactId>
-            <version>2.11.3</version>
-            <scope>provided</scope>
-        </dependency>
+
         <dependency>
             <groupId>me.reklessmitch</groupId>
             <artifactId>VoidTeleport</artifactId>
@@ -125,6 +102,7 @@
             <scope>system</scope>
             <systemPath>${basedir}/libs/VoidTeleport-2.4.2.jar</systemPath>
         </dependency>
+
         <dependency>
             <groupId>me.reklessmitch</groupId>
             <artifactId>LibsDiguises</artifactId>
@@ -132,6 +110,7 @@
             <scope>system</scope>
             <systemPath>${basedir}/libs/LibsDisguises-10.0.37-Free.jar</systemPath>
         </dependency>
+
         <dependency>
             <groupId>me.reklessmitch</groupId>
             <artifactId>worldedit</artifactId>
@@ -139,18 +118,57 @@
             <scope>system</scope>
             <systemPath>${basedir}/libs/FastAsyncWorldEdit-Bukkit-2.6.0-SNAPSHOT-396.jar</systemPath>
         </dependency>
+
+        <dependency>
+            <groupId>me.reklessmitch</groupId>
+            <artifactId>mitchcurrency</artifactId>
+            <version>LATEST</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/libs/MitchCurrencies.jar</systemPath>
+        </dependency>
+        <!--    DEPENDENCIES    -->
         <dependency>
             <groupId>com.comphenix.protocol</groupId>
             <artifactId>ProtocolLib</artifactId>
             <version>5.0.0</version>
             <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>com.github.LoneDev6</groupId>
             <artifactId>api-itemsadder</artifactId>
             <version>3.5.0b</version>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.onarandombox.multiversecore</groupId>
+            <artifactId>Multiverse-Core</artifactId>
+            <version>4.3.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>me.neznamy</groupId>
+            <artifactId>tab-api</artifactId>
+            <version>4.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>me.clip</groupId>
+            <artifactId>placeholderapi</artifactId>
+            <version>2.11.3</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.cryptomorin</groupId>
+            <artifactId>XSeries</artifactId>
+            <version>9.4.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <!--    PAPER    -->
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
