@@ -18,15 +18,21 @@ import me.reklessmitch.csgo.utils.DisplayItem;
 import me.reklessmitch.csgo.utils.SerLocation;
 import me.reklessmitch.mitchcurrency.configs.CPlayer;
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 
@@ -45,6 +51,9 @@ public class CSGO extends Game {
     private Set<UUID> tTeam = new HashSet<>();
     private Set<UUID> ctTeam = new HashSet<>();
     private final Scoreboard sb;
+    private Block bombPlanted;
+    private boolean defusing = false;
+    private boolean planting = false;
 
     public CSGO(@NotNull Arena arena) {
         this.arena = arena;
@@ -55,6 +64,7 @@ public class CSGO extends Game {
                 List.of("&716 Round Gun Game"),
                 121
         ));
+        bombPlanted = null;
         setMaxPlayers(10);
         arena.setActive(true);
         arena.changed();
@@ -63,12 +73,41 @@ public class CSGO extends Game {
                 get(name.toLowerCase());
     }
 
+    private void giveBombToRandomPlayer() {
+        Inventory inventory = Bukkit.getPlayer(MUtil.random(tTeam)).getInventory();
+        inventory.remove(Material.TNT);
+        inventory.addItem(new ItemStack(Material.TNT));
+    }
+
+    private void roundTimer(List<Line> lines) {
+        BukkitRunnable task = new BukkitRunnable() {
+            int repeat = 120;
+            @Override
+            public void run() {
+                if (bombPlanted != null) {
+                    lines.get(2).setText("%img_offset_-500%" + ChatColor.RED +
+                            "BOMB PLANTED: ");
+                    cancel();
+                }
+                lines.get(2).setText("%img_offset_-500%" + ChatColor.RED +
+                        "Round Timer: " + repeat);
+                repeat--;
+                if (repeat <= 0) {
+                    Bukkit.broadcastMessage(ChatColor.RED + "Round OVER DUE TO TIME???");
+                    ctScore++;
+                    newRound();
+                    cancel();
+                }
+            }};
+        task.runTaskTimer(MiniGames.get(), 0, 20);
+    }
 
     private void updateTab(){
         List<Line> lines = sb.getLines();
         for(int i = 1; i < lines.size(); i++){
             lines.get(i).setText("%img_offset_-500%");
         }
+        roundTimer(lines);
         int start = 4;
         lines.get(3).setText("%img_offset_-500%" + ChatColor.RED + "Terrorist");
         for(UUID player: ctTeam){
@@ -84,7 +123,6 @@ public class CSGO extends Game {
             start++;
         }
     }
-
 
     @Override
     public void removePlayer(@NotNull UUID player){
@@ -127,6 +165,8 @@ public class CSGO extends Game {
     }
 
     private void newRound() {
+
+        resetBomb();
         if(tScore + ctScore == 15) {swapTeams();}
         updateBossBar();
         bossBar.setVisible(true);
@@ -141,6 +181,7 @@ public class CSGO extends Game {
             teleportPlayersToTeamSpawn(tTeam, arena.getTeam1Spawns());
             teleportPlayersToTeamSpawn(ctTeam, arena.getTeam2Spawns());
             setPlayersCurrency();
+            giveBombToRandomPlayer();
         }, 20L);
 
         if(tScore + ctScore == 0) {
@@ -152,6 +193,15 @@ public class CSGO extends Game {
             setAllPlayersToSurvival();
             startRound();
         }, 20L);
+    }
+
+    private void resetBomb() {
+        if(bombPlanted != null){
+            bombPlanted.setType(Material.AIR);
+        }
+        bombPlanted = null;
+        defusing = false;
+        planting = false;
     }
 
     private void resetPlayersBossBar(){
@@ -198,7 +248,6 @@ public class CSGO extends Game {
         tTeam.forEach(p -> DisguiseAPI.disguiseToPlayers(Bukkit.getPlayer(p), MUtil.random(tDisguises), idConvertList(getPlayers())));
     }
 
-
     @Override
     public void end() {
         getPlayers().forEach(player -> DisguiseAPI.undisguiseToAll(idConvert(player)));
@@ -239,6 +288,7 @@ public class CSGO extends Game {
             KitColl.get().get("Pistol").giveAllItems(p);
         }
     }
+
     private void setPlayersCurrency(){
         getPlayers().forEach(player -> {
             CPlayer.get(player).getCurrency(MConf.get().getCurrency()).add(player, 1500);
@@ -252,7 +302,6 @@ public class CSGO extends Game {
         if(spawn == null) return;
         team.forEach(spawn::teleport);
     }
-
 
     private void putPlayersOnTeam(){
         int midWayPoint = getPlayers().size() / 2;
@@ -274,17 +323,20 @@ public class CSGO extends Game {
             addCurrencyForKill(killer, 300);
         }
     }
+
     @EventHandler(ignoreCancelled = true)
     public void deathEvent(PlayerDeathEvent event){
         UUID player = event.getEntity().getUniqueId();
         if(!getPlayers().contains(player)) return;
         if(event.getEntity().getKiller() != null) {
-            checkTeamKill(event.getPlayer().getUniqueId(), event.getEntity().getKiller().getUniqueId());
+            checkTeamKill(event.getEntity().getUniqueId(), event.getEntity().getKiller().getUniqueId());
         }
         playersList.put(player, true);
+      
         event.setCancelled(true);
         playerDied(event.getEntity());
         if(allTeamDead(tTeam)){
+            if(bombPlanted != null) return;
             ctScore++;
             getPlayers().forEach(p -> MixinTitle.get().sendTitleMessage(p, 0, 30, 0,
                     "CT wins", "T:" + tScore + " - CT:" + ctScore));
@@ -326,5 +378,127 @@ public class CSGO extends Game {
         player.setGameMode(GameMode.SPECTATOR);
         player.getInventory().clear();
         updateTab();
+    }
+
+
+    // BOMB DEFUSAL METHODS
+
+    @EventHandler(ignoreCancelled = true)
+    public void onBlockPlace(BlockPlaceEvent event){
+        if(!getPlayers().contains(event.getPlayer().getUniqueId())) return;
+        if(planting) {
+            Bukkit.broadcastMessage(ChatColor.RED + "You can't plant the bomb right now");
+            event.setCancelled(true);
+            return;
+        }
+
+        if(!event.getBlockAgainst().getType().name().toLowerCase().contains("terracotta")) {
+            event.getPlayer().sendMessage(ChatColor.RED + "You can only place the bomb on bomb sites");
+            event.setCancelled(true);
+            return;
+        }
+        event.setCancelled(true);
+        planting = true;
+        Block block = event.getBlockPlaced().getRelative(0, -1, 0);
+        PlayerInventory inventory = event.getPlayer().getInventory();
+        if(inventory.getItemInMainHand().getType().equals(Material.TNT)) {
+            inventory.remove(Material.TNT);
+        }
+
+        checkPlant(block, event.getPlayer(), event, inventory);
+
+    }
+
+    private void checkPlant(Block block, Player player, BlockPlaceEvent event, PlayerInventory inventory){
+        BukkitRunnable task = new BukkitRunnable() {
+            int repeat = 6;
+            @Override
+            public void run() {
+                if (!player.isOnline()) {cancel();
+                    planting = false;
+                    return;
+                }
+                Block currentBlock = player.getTargetBlock(null, 5);
+                if (!currentBlock.equals(block)) {
+                    inventory.addItem(new ItemStack(Material.TNT));
+                    planting = false;
+                    cancel();
+                    return;
+                }
+                Bukkit.broadcastMessage(ChatColor.RED + "Bomb planting " + repeat + " seconds left");
+                repeat--;
+                if (repeat <= 0) {
+                    bombPlanted = event.getBlock();
+                    Bukkit.broadcastMessage(ChatColor.RED + "Bomb planted");
+                    event.getBlock().setType(Material.TNT);
+                    checkExplode();
+                    cancel();
+                }
+            }};
+        task.runTaskTimer(MiniGames.get(), 0, 10);
+    }
+
+
+    @EventHandler
+    public void onPlayerInteract(PlayerInteractEvent event) {
+        if(!ctTeam.contains(event.getPlayer().getUniqueId())) return;
+        if (event.getAction().isRightClick()) {
+            if(bombPlanted == null || defusing) return;
+            if(event.getClickedBlock() != null && event.getClickedBlock().getType() == bombPlanted.getType()) {
+                Block clickedBlock = event.getClickedBlock();
+                Player player = event.getPlayer();
+                defusing = true;
+                checkDefuse(clickedBlock, player);
+            }
+        }
+    }
+
+    private void checkExplode() {
+        BukkitRunnable task = new BukkitRunnable() {
+            int repeat = 8;
+            @Override
+            public void run() {
+                if(bombPlanted == null){
+                    cancel();
+                    return;
+                }
+                repeat--;
+                if (repeat <= 0) {
+                    Bukkit.broadcastMessage("BOMB EXPLODED");
+                    ctScore++;
+                    newRound();
+                    cancel();
+                }
+            }};
+        task.runTaskTimer(MiniGames.get(), 0, 100);
+    }
+
+    private void checkDefuse(Block clickedBlock, Player player){
+        BukkitRunnable task = new BukkitRunnable() {
+            int repeat = 6;
+            @Override
+            public void run() {
+                if (!player.isOnline()) {
+                    defusing = false;
+                    cancel();
+                    return;
+                }
+                Block currentBlock = player.getTargetBlock(null, 3);
+                if (!currentBlock.equals(clickedBlock)) {
+                    Bukkit.broadcastMessage(ChatColor.RED + "LOOKED AWAY U TWAT");
+                    defusing = false;
+                    cancel();
+                    return;
+                }
+                Bukkit.broadcastMessage(ChatColor.RED + "Bomb Defusing " + repeat + " seconds left");
+                repeat--;
+                if (repeat <= 0) {
+                    Bukkit.broadcastMessage("BOMB DEFUSED");
+                    ctScore++;
+                    newRound();
+                    cancel();
+                }
+            }};
+        task.runTaskTimer(MiniGames.get(), 0, 10);
     }
 }

@@ -3,7 +3,7 @@ version: '1.0-SNAPSHOT'
 main: me.reklessmitch.csgo.MiniGames
 api-version: 1.19
 authors: [ ReklessMitch ]
-depend: [PlaceholderAPI, MassiveCore, Multiverse-Core]
+depend: [PlaceholderAPI, MassiveCore, Multiverse-Core, ItemsAdder]
 description: CSGO with IA
 permissions:
   csgo.admin: {description: admin, default: false}

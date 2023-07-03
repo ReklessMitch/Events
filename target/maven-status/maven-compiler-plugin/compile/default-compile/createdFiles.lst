@@ -1,6 +1,7 @@
 me\reklessmitch\csgo\configs\Kit.class
 me\reklessmitch\csgo\cmd\ArenaCommand.class
 me\reklessmitch\csgo\utils\DisplayItem.class
+me\reklessmitch\csgo\games\tg\CSGO$2.class
 me\reklessmitch\csgo\games\other\Spleef.class
 me\reklessmitch\csgo\utils\UUIDUtil.class
 me\reklessmitch\csgo\cmd\other\CmdTornyGUI.class
@@ -15,6 +16,7 @@ me\reklessmitch\csgo\cmd\arena\CmdArenaAddSpawn.class
 me\reklessmitch\csgo\cmd\arena\CmdSpleefAddFloor.class
 me\reklessmitch\csgo\cmd\other\CmdSpawn.class
 me\reklessmitch\csgo\cmd\other\CmdGamesGUI.class
+me\reklessmitch\csgo\games\tg\CSGO$3.class
 me\reklessmitch\csgo\cmd\other\CmdCSGOShop.class
 me\reklessmitch\csgo\colls\KitColl.class
 me\reklessmitch\csgo\games\ffa\FFA.class
@@ -34,6 +36,7 @@ me\reklessmitch\csgo\utils\Countdown$TickAction.class
 me\reklessmitch\csgo\colls\MConfColl.class
 me\reklessmitch\csgo\games\Game.class
 me\reklessmitch\csgo\colls\ArenaColl.class
+me\reklessmitch\csgo\games\tg\CSGO$4.class
 me\reklessmitch\csgo\cmd\arena\CmdArena.class
 me\reklessmitch\csgo\cmd\arena\CmdArenaTGAddSpawn.class
 me\reklessmitch\csgo\configs\MConf.class
@@ -44,6 +47,7 @@ me\reklessmitch\csgo\games\duel\Duel.class
 me\reklessmitch\csgo\games\tpg\FlowerPoker.class
 me\reklessmitch\csgo\utils\ShopItem.class
 me\reklessmitch\csgo\games\todo\HungerGames.class
+me\reklessmitch\csgo\games\tg\CSGO$1.class
 me\reklessmitch\csgo\games\tg\CSGO.class
 me\reklessmitch\csgo\guis\CSGOShop.class
 me\reklessmitch\csgo\games\todo\BattleRoyale.class

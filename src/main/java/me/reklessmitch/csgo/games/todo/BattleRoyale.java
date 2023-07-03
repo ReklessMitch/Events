@@ -193,9 +193,9 @@ public class BattleRoyale extends Game {
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event){
-        if(!getPlayers().contains(event.getPlayer().getUniqueId())) return;
-        removePlayer(event.getPlayer().getUniqueId());
-        finishedPosition.put(finishedPosition.size(), event.getPlayer().getUniqueId());
+        if(!getPlayers().contains(event.getEntity().getUniqueId())) return;
+        removePlayer(event.getEntity().getUniqueId());
+        finishedPosition.put(finishedPosition.size(), event.getEntity().getUniqueId());
         if(event.getEntity().getKiller() != null){
             UUID killerID = event.getEntity().getKiller().getUniqueId();
             kills.put(killerID, kills.getOrDefault(killerID, 0) + 1);
@@ -206,6 +206,7 @@ public class BattleRoyale extends Game {
         if(getPlayers().size() == 1){
             UUID player = getPlayers().stream().toList().get(0);
             finishedPosition.put(finishedPosition.size(), player);
+            removePlayer(player);
             end();
         }else{
             updateTab();

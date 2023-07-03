@@ -47,6 +47,11 @@
       <option name="url" value="https://repo.kryptonmc.org/releases" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="sk89q-repo" />
+      <option name="name" value="sk89q-repo" />
+      <option name="url" value="https://maven.enginehub.org/repo/" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="jitpack-repo" />
       <option name="name" value="jitpack-repo" />
       <option name="url" value="https://jitpack.io" />
