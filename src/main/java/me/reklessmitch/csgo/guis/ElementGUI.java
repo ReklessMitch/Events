@@ -1,57 +1,51 @@
 package me.reklessmitch.csgo.guis;
 
+import com.cryptomorin.xseries.SkullUtils;
 import com.massivecraft.massivecore.chestgui.ChestGui;
 import me.reklessmitch.csgo.MiniGames;
 import me.reklessmitch.csgo.games.todo.Element;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.SkullMeta;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class ElementGUI extends ChestGui implements Listener {
 
-    List<Element> elementGames;
+    private final @NotNull List<@NotNull Element> elementGames;
 
     public ElementGUI() {
-        Inventory inventory = Bukkit.createInventory(null, 18, "Games");
+        // TODO: 03/07/2023 elementGames variable
+        elementGames = new LinkedList<>();
+
+        Inventory inventory = Bukkit.createInventory(null, 18, Component.text("Games"));
         setUpGUI();
         this.setInventory(inventory);
         MiniGames.get().getServer().getPluginManager().registerEvents(this, MiniGames.get());
-
-    }
-
-    private ItemStack getSkullOfPlayer(Player player){
-
-        ItemStack stack = new ItemStack(Material.PLAYER_HEAD);
-        SkullMeta skullMeta = (SkullMeta) Bukkit.getItemFactory().getItemMeta(Material.PLAYER_HEAD);
-        skullMeta.setOwningPlayer(player);
-        skullMeta.setDisplayName(player.getName());
-        stack.setItemMeta(skullMeta);
-        return stack;
     }
 
     public void setUpGUI() {
         elementGames.forEach(game -> {
+            // TODO: 03/07/2023 (URGENT) Check if the p is online
             Player p = Bukkit.getPlayer(game.getPlayers().stream().findAny().get());
-            ItemStack itemStack = getSkullOfPlayer(p);
+            ItemStack itemStack = SkullUtils.getSkull(p.getUniqueId());
             this.getInventory().addItem(itemStack);
         });
     }
 
-    public void open(Player player) {
+    public void open(@NotNull Player player) {
         player.openInventory(this.getInventory());
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onInvenClick(InventoryClickEvent event) {
-        Player player = (Player) event.getWhoClicked();
         Inventory clickedInventory = event.getClickedInventory();
         if (clickedInventory != null && clickedInventory.equals(this.getInventory())) {
             event.setCancelled(true);

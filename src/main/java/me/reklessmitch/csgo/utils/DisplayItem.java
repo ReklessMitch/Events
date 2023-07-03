@@ -10,6 +10,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.List;
 
 @Getter
+// TODO: 03/07/2023 Improve this, XSeries have a good item serializer.
 public class DisplayItem {
     // These Cannot be final because MCORE needs to be able to serialize them
     private Material material;

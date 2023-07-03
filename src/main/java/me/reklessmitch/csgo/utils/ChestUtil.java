@@ -1,7 +1,5 @@
 package me.reklessmitch.csgo.utils;
 
-import com.massivecraft.massivecore.util.MUtil;
-import me.reklessmitch.csgo.configs.MConf;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
@@ -13,6 +11,7 @@ import java.util.List;
 
 public class ChestUtil {
 
+    // TODO: 03/07/2023 Improve this (Lagging)
     public static List<Chest> getChestsInRadius(@NotNull Location location, int radius) {
         List<Chest> chests = new ArrayList<>();
         int minX = location.getBlockX() - radius;

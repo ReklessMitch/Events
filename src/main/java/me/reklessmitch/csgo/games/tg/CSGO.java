@@ -218,7 +218,7 @@ public class CSGO extends Game {
             .onTick(secondsLeft -> {
                 if(secondsLeft <= 5 || secondsLeft % 5 == 0){
                     getPlayers().forEach(player -> MixinTitle.get().sendTitleMessage(player, 0, 20, 0,
-                            ChatColor.GRAY + "Round Begins in", ChatColor.RED + String.valueOf(secondsLeft) + "seconds"));
+                            "§7Round Begins in", "§c" + secondsLeft + "seconds"));
                 }
             })
             .onComplete(() -> setHasStarted(true)).start(MiniGames.get());

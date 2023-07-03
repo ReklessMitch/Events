@@ -3,6 +3,7 @@ package me.reklessmitch.csgo.guis;
 import com.massivecraft.massivecore.chestgui.ChestGui;
 import me.reklessmitch.csgo.MiniGames;
 import me.reklessmitch.csgo.torny.Tournament;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -10,6 +11,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +22,7 @@ public class TournyGUI extends ChestGui implements Listener {
     private final Inventory inventory;
 
     public TournyGUI() {
-        inventory = Bukkit.createInventory(null, 18, "Tournaments");
+        inventory = Bukkit.createInventory(null, 18, Component.text("Tournaments"));
         refreshGUI(inventory);
         MiniGames.get().getServer().getPluginManager().registerEvents(this, MiniGames.get());
     }
@@ -52,7 +54,7 @@ public class TournyGUI extends ChestGui implements Listener {
         player.closeInventory();
     }
 
-    public void open(Player player){
+    public void open(@NotNull Player player){
         player.openInventory(inventory);
     }
 }
