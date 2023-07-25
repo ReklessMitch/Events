@@ -20,3 +20,4 @@ public class CmdGamesGUI extends ArenaCommand {
         new GamesGUI().open((Player) sender);
     }
 }
+

@@ -41,6 +41,7 @@ public final class MiniGames extends MassivePlugin {
     private final Set<UUID> playersInGame = new HashSet<>();
     private World eventWorld;
     private World spawnWorld;
+    private World bdWorld;
     private int gameAmount = 0;
 
     public MiniGames() {
@@ -55,12 +56,7 @@ public final class MiniGames extends MassivePlugin {
     }
 
     private void createBRWorld(){
-        WorldCreator worldCreator = new WorldCreator("br");
-        worldCreator.generator(new BDGen());
-        worldCreator.generateStructures(false);
-        worldCreator.type(WorldType.NORMAL);
-        worldCreator.createWorld();
-        worldCreator.generator(new BDGen().toString());
+        this.bdWorld = new BDGen("br").createWorld();
     }
 
 
@@ -123,11 +119,6 @@ public final class MiniGames extends MassivePlugin {
             arena.setActive(false);
             arena.changed();
         });
-    }
-
-    @Override
-    public ChunkGenerator getDefaultWorldGenerator(@NotNull String worldName, String id) {
-        return new BDGen();
     }
 
     @Override

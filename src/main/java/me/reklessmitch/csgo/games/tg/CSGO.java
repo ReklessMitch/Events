@@ -24,6 +24,7 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -89,11 +90,14 @@ public class CSGO extends Game {
                             "BOMB PLANTED: ");
                     cancel();
                 }
+                if(!isHasStarted()){
+                    cancel();
+                }
                 lines.get(2).setText("%img_offset_-500%" + ChatColor.RED +
                         "Round Timer: " + repeat);
                 repeat--;
                 if (repeat <= 0) {
-                    Bukkit.broadcastMessage(ChatColor.RED + "Round OVER DUE TO TIME???");
+                    Bukkit.broadcastMessage(ChatColor.RED + "Round OVER DUE TO TIME");
                     ctScore++;
                     newRound();
                     cancel();
@@ -177,7 +181,6 @@ public class CSGO extends Game {
         setHasStarted(false);
         Bukkit.getScheduler().runTaskLater(MiniGames.get(), () -> {
             playersList.replaceAll((player, status) -> false);
-            updateTab();
             teleportPlayersToTeamSpawn(tTeam, arena.getTeam1Spawns());
             teleportPlayersToTeamSpawn(ctTeam, arena.getTeam2Spawns());
             setPlayersCurrency();
@@ -271,6 +274,7 @@ public class CSGO extends Game {
                 }
             })
             .onComplete(() -> setHasStarted(true)).start(MiniGames.get());
+        updateTab();
     }
 
     private void openShop(){
@@ -442,7 +446,7 @@ public class CSGO extends Game {
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         if(!ctTeam.contains(event.getPlayer().getUniqueId())) return;
-        if (event.getAction().isRightClick()) {
+        if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
             if(bombPlanted == null || defusing) return;
             if(event.getClickedBlock() != null && event.getClickedBlock().getType() == bombPlanted.getType()) {
                 Block clickedBlock = event.getClickedBlock();

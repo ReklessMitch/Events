@@ -5,56 +5,35 @@ import me.reklessmitch.csgo.MiniGames;
 import me.reklessmitch.csgo.torny.Tournament;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.Map;
 
-public class TournyGUI extends ChestGui implements Listener {
-
-    private final Map<Tournament, Integer> games = new HashMap<>();
-    private final Inventory inventory;
+public class TournyGUI extends ChestGui{
 
     public TournyGUI() {
-        inventory = Bukkit.createInventory(null, 18, Component.text("Tournaments"));
-        refreshGUI(inventory);
-        MiniGames.get().getServer().getPluginManager().registerEvents(this, MiniGames.get());
+        setInventory(Bukkit.createInventory(null, 18, Component.text("Tournaments")));
+        refreshGUI();
     }
 
-    public void refreshGUI(Inventory inventory){
+    public void refreshGUI(){
         int i = 0;
         for(Tournament game : MiniGames.get().getTournaments()){
-            if(game.isStarted()) return;
-            games.put(game, i);
-            inventory.setItem(i, game.getDisplayItem().getGuiItem());
+            if(game.isStarted()) continue;
+            getInventory().setItem(i, game.getDisplayItem().getGuiItem());
+            setAction(i, event -> {
+                if (game.isStarted()) {
+                    event.getWhoClicked().sendMessage("§c✘ §7That game already started!");
+                } else {
+                    game.addPlayer(event.getWhoClicked().getUniqueId());
+                }
+                return true;
+            });
             i++;
         }
     }
 
-    @EventHandler(ignoreCancelled = true)
-    public void onInventoryClick(InventoryClickEvent event) {
-        Player player = (Player) event.getWhoClicked();
-        Inventory clickedInventory = event.getClickedInventory();
-        if (clickedInventory == null || !clickedInventory.equals(inventory)) return;
-        event.setCancelled(true);
-        if (event.getCurrentItem() == null) return;
-        Tournament game = games.keySet().stream().filter(g -> games.get(g) == event.getSlot()).findFirst().orElse(null);
-        if (game == null || game.isStarted()) {
-            player.closeInventory();
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cGame no longer exists"));
-            return;
-        }
-        game.addPlayer(player.getUniqueId());
-        player.closeInventory();
-    }
-
     public void open(@NotNull Player player){
-        player.openInventory(inventory);
+        player.openInventory(getInventory());
     }
 }
